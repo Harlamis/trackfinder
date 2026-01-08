@@ -1,4 +1,5 @@
 import "../index.css";
+import { Button } from "./Button";
 
 const tableHeaders = [
   "Innitiative",
@@ -42,6 +43,9 @@ export function EncounterTable() {
               {header}
             </th>
           ))}
+          <th>
+            <Button>Hello World!</Button>
+          </th>
         </tr>
       </thead>
       <tbody>
