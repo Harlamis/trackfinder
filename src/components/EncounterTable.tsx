@@ -1,5 +1,6 @@
 import "../index.css";
 import { Button } from "./Button";
+import ConditionBadge from "./ConditionBadge";
 
 const tableHeaders = [
   "Innitiative",
@@ -57,7 +58,9 @@ export function EncounterTable() {
               </td>
               <td className="p-4 text-pf-red">{hp}</td>
               <td className="p-4 text-">{ac}</td>
-              <td className="p-4">{conditions}</td>
+              <td className="p-4">
+                {conditions} <ConditionBadge type="Stunned" value={1} />
+              </td>
               <td className="p-4">{comments}</td>
             </tr>
           )

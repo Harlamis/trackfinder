@@ -5,10 +5,17 @@
   --color-surface: #1a2230;
   --color-accent: #f0b90b;
   --color-surface-danger: #6b1919;
+
   --color-text-primary: #f8fafc;
   --color-text-primary-dark: #0a0a14;
   --color-text-secondary: #94a3b8;
+
   --color-status-warning: #dc2626;
+
+  --color-condition-dazed: #fbbf24;
+  --color-condition-blinded: #475569;
+  --color-condition-stunned: #fde047;
+  --color-condition-dying: #7f1d1d;
 
   --font-display: "MedievalSharp", cursive;
 }
