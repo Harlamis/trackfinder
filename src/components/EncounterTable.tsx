@@ -59,7 +59,7 @@ export function EncounterTable() {
               <td className="p-4 text-pf-red">{hp}</td>
               <td className="p-4 text-">{ac}</td>
               <td className="p-4">
-                {conditions} <ConditionBadge type="Stunned" value={1} />
+                {conditions} <ConditionBadge type="Stunned" />
               </td>
               <td className="p-4">{comments}</td>
             </tr>

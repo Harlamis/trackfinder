@@ -29,11 +29,12 @@ const ConditionMetadata: Record<ConditionType, ConditionInfo> = {
   },
 };
 
-export default function ConditionBadge({ type, value = 0 }: ICondition) {
+export default function ConditionBadge({ type, value }: ICondition) {
   const meta = ConditionMetadata[type];
+  const innerContent = value ? `${type} ${value}` : type;
   return (
     <span className={`${meta.color} rounded-2xl text-text-primary-dark`}>
-      {type} {value}
+      {innerContent}
     </span>
   );
 }
