@@ -1,4 +1,4 @@
-import EncounterParticipant from "./components/EncounterParticipant";
+import EncounterParticipant from "./components/ParticipantCard";
 import { EncounterTable } from "./components/EncounterTable";
 import "./index.css";
 
