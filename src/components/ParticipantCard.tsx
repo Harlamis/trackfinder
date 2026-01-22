@@ -18,7 +18,7 @@ const ParticipantCard = ({
   initiative,
 }: IParticipant) => {
   return (
-    <div className="flex justify-between items-center w-full h-16">
+    <div className="flex justify-between items-center w-full h-16 border-2 rounded-2xl border-text-secondary px-2 transition-all hover:border-accent hover:shadow-lg hover:-translate-y-px cursor-pointer">
       <span className="text-accent">{initiative}</span>
       <span className="text-text-primary">{name}</span>
       <span className="text-text-secondary">{armor_class}</span>

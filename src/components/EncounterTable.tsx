@@ -25,7 +25,7 @@ const participants: IParticipant[] = [
 
 export function EncounterTable() {
   return (
-    <div className="flex flex-col h-fit w-5xl">
+    <div className="flex flex-col gap-1.5 h-fit w-5xl bg-surface p-4">
       {participants
         .toSorted((a, b) => b.initiative - a.initiative)
         .map((participant) => (
