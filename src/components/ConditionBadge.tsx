@@ -33,7 +33,7 @@ export default function ConditionBadge({ type, value }: ICondition) {
   const meta = ConditionMetadata[type];
   const innerContent = value ? `${type} ${value}` : type;
   return (
-    <span className={`${meta.color} rounded-2xl text-text-primary-dark`}>
+    <span className={`${meta.color} rounded-2xl text-text-primary-dark h-8 flex items-center justify-center px-3`}>
       {innerContent}
     </span>
   );
