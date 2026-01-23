@@ -1,4 +1,5 @@
 import ConditionBadge from "./ConditionBadge";
+import type { ICondition } from "./ConditionBadge";
 
 export interface IParticipant {
   base_id: number;
@@ -7,6 +8,7 @@ export interface IParticipant {
   max_health: number;
   armor_class: number;
   initiative: number;
+  conditions: ICondition[];
 }
 
 const ParticipantCard = ({
@@ -16,6 +18,7 @@ const ParticipantCard = ({
   max_health,
   armor_class,
   initiative,
+  conditions,
 }: IParticipant) => {
   return (
     <div className="flex justify-between items-center w-full h-16 border-2 rounded-2xl border-text-secondary px-2 transition-all hover:border-accent hover:shadow-lg hover:-translate-y-px cursor-pointer">
@@ -25,7 +28,11 @@ const ParticipantCard = ({
       <span className="text-status-warning">
         {current_health}/{max_health}
       </span>
-      <ConditionBadge type="Dazed" />
+      <span className="flex flex-col bg-main-bg overflow-hidden">
+        {conditions.map((condition) => (
+          <ConditionBadge type={condition.type} value={condition.value} />
+        ))}
+      </span>
     </div>
   );
 };

@@ -5,7 +5,7 @@ interface ConditionInfo {
   applyEffect?: () => void; //IParticipant will be here instead of "any"
 }
 
-interface ICondition {
+export interface ICondition {
   type: ConditionType;
   value?: number;
 }
@@ -33,7 +33,9 @@ export default function ConditionBadge({ type, value }: ICondition) {
   const meta = ConditionMetadata[type];
   const innerContent = value ? `${type} ${value}` : type;
   return (
-    <span className={`${meta.color} rounded-2xl text-text-primary-dark h-8 flex items-center justify-center px-3`}>
+    <span
+      className={`${meta.color} rounded-2xl text-text-primary-dark h-8 flex items-center justify-center px-3`}
+    >
       {innerContent}
     </span>
   );

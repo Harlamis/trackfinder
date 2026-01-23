@@ -12,6 +12,12 @@ const participants: IParticipant[] = [
     max_health: 45,
     armor_class: 19,
     initiative: 18,
+    conditions: [
+      {
+        type: "Dazed",
+        value: 1,
+      },
+    ],
   },
   {
     base_id: 2,
@@ -20,6 +26,16 @@ const participants: IParticipant[] = [
     max_health: 23,
     armor_class: 14,
     initiative: 20,
+    conditions: [
+      {
+        type: "Stunned",
+        value: 2,
+      },
+      {
+        type: "Dying",
+        value: 3,
+      },
+    ],
   },
 ];
 
