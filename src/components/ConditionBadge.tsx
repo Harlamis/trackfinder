@@ -34,7 +34,7 @@ export default function ConditionBadge({ type, value }: ICondition) {
   const innerContent = value ? `${type} ${value}` : type;
   return (
     <span
-      className={`${meta.color} rounded-2xl text-text-primary-dark h-8 flex items-center justify-center px-3`}
+      className={`${meta.color} rounded-2xl text-text-primary-dark h-8 flex items-center justify-center w-25 tracking-tighter`}
     >
       {innerContent}
     </span>

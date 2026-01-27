@@ -41,12 +41,29 @@ const participants: IParticipant[] = [
 
 export function EncounterTable() {
   return (
-    <div className="flex flex-col gap-1.5 h-fit w-5xl bg-surface p-4">
-      {participants
-        .toSorted((a, b) => b.initiative - a.initiative)
-        .map((participant) => (
-          <ParticipantCard key={participant.base_id} {...participant} />
-        ))}
+    <div className="flex flex-col gap-3 h-fit lg:w-5xl w-full bg-surface p-3 sm:p-4 overflow-x-hidden">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+        <h2 className="text-text-primary text-lg sm:text-2xl font-bold truncate">
+          Encounter
+        </h2>
+
+        <div className="flex gap-1.5">
+          <Button className="text-[10px] sm:text-xs px-2 py-1 h-8">
+            Next Turn
+          </Button>
+          <Button className="text-[10px] sm:text-xs px-2 py-1 h-8">
+            Add Creature
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        {participants
+          .toSorted((a, b) => b.initiative - a.initiative)
+          .map((participant) => (
+            <ParticipantCard key={participant.base_id} {...participant} />
+          ))}
+      </div>
     </div>
   );
 }
