@@ -1,8 +1,22 @@
+@import url("https://fonts.googleapis.com/css?family=Jaini");
+@import url("https://fonts.googleapis.com/css2?family=Jaro&display=swap");
 @import "tailwindcss";
 
 @theme {
   --color-main-bg: #0f172a;
   --color-main-card: #1e293b;
-  --color-pf-accent: #d4af37;
-  --color-pf-red: #991b1b;
+  --color-accent: #d4af37;
+  --color-danger: #991b1b;
+  --color-text-main: #f8fafc;
+  --color-text-muted: #94a3b8;
+  --color-success: #059669;
+  --color-border: #334155;
+  --color-card-hover: #475569;
+  --color-accent-hover: #b59023;
+  --font-logo: "Jaini";
+  --font-main: "Jaro";
+}
+
+body {
+  font-family: "Jaro", sans-serif;
 }
