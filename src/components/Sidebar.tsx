@@ -5,12 +5,17 @@ interface SidebarProps {
 
 export const Sidebar = ({ isOpen, onCloseMenu }: SidebarProps) => {
   return (
-    <div
-      className={`w-64 p-4 transition-all ${
-        isOpen
-          ? "bg-main-card translate-0 opacity-100"
-          : "bg-main-bg/50 -translate-x-10 opacity-30 pointer-events-none"
-      }`}
-    ></div>
+    <>
+      <div
+        className={`fixed top-0 left-0 z-90 transition-transform duration-300 w-60 bg-main-card h-screen md:static md:translate-x-0 md:w-full md:col-span-3
+                  ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
+      ></div>
+      {isOpen && (
+        <div
+          className="fixed z-80 inset-0 bg-main-bg w-screen h-screen opacity-50"
+          onClick={onCloseMenu}
+        ></div>
+      )}
+    </>
   );
 };
