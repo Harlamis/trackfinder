@@ -11,7 +11,7 @@ export const Dashboard = () => {
 
   return (
     <div className='min-h-screen bg-main-bg md:grid md:grid-cols-12'>
-      <MobileHeader onOpenMenu={handleOpenMenu} />
+      <MobileHeader isMenuOpen={isSidebarOpen} onOpenMenu={handleOpenMenu} />
       <Sidebar isOpen={isSidebarOpen} onCloseMenu={handleCloseMenu} />
     </div>
   );
