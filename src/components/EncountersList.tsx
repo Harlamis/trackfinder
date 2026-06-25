@@ -14,7 +14,7 @@ export const EncountersListItem = ({
   return (
     <li
       onClick={() => onSelect(encounter.id)}
-      className={`flex justify-between border-t border-b border-main-card text-xl text-text-muted transition-all duration-150 hover:bg-accent/10 hover:text-text-main ${isActive && 'bg-accent/10 text-text-main!'}`}
+      className={`flex justify-between border-t-2 border-b-2 border-border p-2.5 text-xl text-text-muted transition-all duration-300 hover:bg-accent/10 hover:text-text-main ${isActive && 'bg-accent/10 text-text-main!'}`}
     >
       <div>{encounter.name}</div>
       <div>{encounter.currentRound}</div>
@@ -34,7 +34,7 @@ export const EncountersList = ({
   onSelectActive,
 }: EncountersListProps) => {
   return (
-    <ul>
+    <ul className='flex w-full flex-col gap-2.5'>
       {encounters.map((enc) => (
         <EncountersListItem
           key={enc.id}

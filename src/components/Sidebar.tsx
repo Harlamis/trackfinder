@@ -28,7 +28,7 @@ export const Sidebar = ({
           </button>
         </div>
 
-        <div className='flex flex-col w-full'>
+        <div className='flex flex-col gap-2.5 w-full'>
           <h2 className='text-2xl text-text-main'>Your Encounters</h2>
           <EncountersList
             encounters={encounters}
