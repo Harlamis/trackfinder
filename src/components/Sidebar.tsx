@@ -20,7 +20,7 @@ export const Sidebar = ({
   return (
     <>
       <div
-        className={`fixed top-0 left-0 z-90 flex h-screen w-60 bg-main-card transition-transform duration-300 md:static md:col-span-3 md:w-full md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed top-0 left-0 z-90 flex h-screen w-60 bg-main-card transition-transform duration-300 md:static md:col-span-3 md:w-full md:translate-x-0 flex-col ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className='flex h-14 w-full items-center justify-end border-b-border p-2.5'>
           <button onClick={onCloseMenu} className='h-fit'>
@@ -28,8 +28,8 @@ export const Sidebar = ({
           </button>
         </div>
 
-        <div className='flex'>
-          <h2>Your Encounters</h2>
+        <div className='flex flex-col w-full'>
+          <h2 className='text-2xl text-text-main'>Your Encounters</h2>
           <EncountersList
             encounters={encounters}
             activeEncounterId={activeEncounterId}
