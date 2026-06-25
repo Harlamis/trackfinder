@@ -1,4 +1,5 @@
 import type { Encounter } from '../types';
+import AddCrossIcon from '../assets/add-cross.svg';
 
 interface EncountersListItemProps {
   encounter: Encounter;
@@ -43,6 +44,9 @@ export const EncountersList = ({
           onSelect={onSelectActive}
         />
       ))}
+      <button className='flex items-center justify-center rounded-md border-2 border-accent p-2.5 hover:bg-accent/70'>
+        <img src={AddCrossIcon} alt='Add Encounter' />
+      </button>
     </ul>
   );
 };
