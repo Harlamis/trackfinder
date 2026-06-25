@@ -3,3 +3,8 @@ export interface Encounter {
   name: string;
   currentRound: number;
 }
+
+export interface Monster {
+  id: number;
+  name: string;
+}

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { MobileHeader } from './MobileHeader';
 import { Sidebar } from './Sidebar';
-import type { Encounter } from '../types';
+import { type Encounter } from '../types';
+import { type Monster } from '../types';
 
 export const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -9,6 +10,9 @@ export const Dashboard = () => {
     { id: 1, name: 'Tavern Fight', currentRound: 1 },
     { id: 2, name: 'Cave Fight', currentRound: 4 },
     { id: 3, name: 'Dungeon Fight', currentRound: 0 },
+  ]);
+  const [raMonsters, setRaMonsters] = useState<Monster[]>([
+    { id: 1, name: 'goblin' },
   ]);
   const [activeEncounterId, setActiveEncounterId] = useState<number | null>(
     null
@@ -30,6 +34,8 @@ export const Dashboard = () => {
         encounters={encounters}
         activeEncounterId={activeEncounterId}
         onSelectEncounter={setActiveEncounterId}
+        monsters={raMonsters}
+        onSelectMonster={() => false}
       />
     </div>
   );
