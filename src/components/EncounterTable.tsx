@@ -31,7 +31,7 @@ export const EncounterTable = ({ encounter }: EncounterTableProps) => {
     <section className='flex flex-col md:col-span-6'>
       <div className='w-full text-2xl text-text-muted'>
         <h2>Round: {encounter.currentRound}</h2>
-        <div>
+        <div className='flex flex-col gap-5'>
           <div className='hidden grid-cols-12 gap-4 px-4 py-2 text-text-main md:grid'>
             <div className='col-span-1'>Init</div>
             <div className='col-span-5'>Name</div>
