@@ -4,15 +4,16 @@ export interface Encounter {
   currentRound: number;
 }
 
-export interface SidebarMonsterMetadata extends Omit<Monster, 'maxHp' | 'currentHp' | 'ac' | 'init'>
-
-
 export interface Monster {
   id: number;
   name: string;
   maxHp: number;
-  currentHp?: number;
+  currentHp: number;
   ac: number;
-  init?: number;
+  init: number;
   isPlayer?: boolean;
 }
+export type SidebarMonsterMetadata = Omit<
+  Monster,
+  'maxHp' | 'currentHp' | 'ac' | 'init'
+>;
