@@ -1,13 +1,13 @@
-import type { Monster } from '../types';
+import type { Monster, SidebarMonsterMetadata } from '../types';
 import AddCrossIcon from '../assets/add-cross.svg';
 
 interface RAMonstersListProps {
-  monsters: Monster[];
+  monsters: SidebarMonsterMetadata[];
   onSelectMonster(id: number): void;
 }
 
 interface RAMonstersListItemProps {
-  monster: Monster;
+  monster: SidebarMonsterMetadata;
   onSelect(id: number): void;
 }
 

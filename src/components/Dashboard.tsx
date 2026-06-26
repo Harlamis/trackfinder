@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { MobileHeader } from './MobileHeader';
 import { Sidebar } from './Sidebar';
 import { type Encounter } from '../types';
-import { type Monster } from '../types';
+import type { SidebarMonsterMetadata } from '../types';
 
 export const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -11,7 +11,7 @@ export const Dashboard = () => {
     { id: 2, name: 'Cave Fight', currentRound: 4 },
     { id: 3, name: 'Dungeon Fight', currentRound: 0 },
   ]);
-  const [raMonsters, setRaMonsters] = useState<Monster[]>([
+  const [raMonsters, setRaMonsters] = useState<SidebarMonsterMetadata[]>([
     { id: 1, name: 'goblin' },
   ]);
   const [activeEncounterId, setActiveEncounterId] = useState<number | null>(

@@ -1,5 +1,5 @@
 import burgerMenuIcon from '../assets/burger-menu-icon.svg';
-import type { Encounter, Monster } from '../types';
+import type { Encounter, Monster, SidebarMonsterMetadata } from '../types';
 import { EncountersList } from './EncountersList';
 import { RAMonstersList } from './RAMonstersList';
 
@@ -9,7 +9,7 @@ interface SidebarProps {
   encounters: Encounter[];
   activeEncounterId: number | null;
   onSelectEncounter(id: number): void;
-  monsters: Monster[];
+  monsters: SidebarMonsterMetadata[];
   onSelectMonster(id: number): void;
 }
 
