@@ -2,6 +2,7 @@ export interface Encounter {
   id: number;
   name: string;
   currentRound: number;
+  monsters: Monster[];
 }
 
 export interface Monster {
