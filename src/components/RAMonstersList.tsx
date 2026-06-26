@@ -1,5 +1,4 @@
-import type { Monster, SidebarMonsterMetadata } from '../types';
-import AddCrossIcon from '../assets/add-cross.svg';
+import type { SidebarMonsterMetadata } from '../types';
 
 interface RAMonstersListProps {
   monsters: SidebarMonsterMetadata[];

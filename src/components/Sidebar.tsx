@@ -1,5 +1,5 @@
 import burgerMenuIcon from '../assets/burger-menu-icon.svg';
-import type { Encounter, Monster, SidebarMonsterMetadata } from '../types';
+import type { Encounter, SidebarMonsterMetadata } from '../types';
 import { EncountersList } from './EncountersList';
 import { RAMonstersList } from './RAMonstersList';
 
