@@ -11,9 +11,9 @@ export interface Monster {
   currentHp: number;
   ac: number;
   init: number;
-  isPlayer?: boolean;
+  isPlayer: boolean;
 }
 export type SidebarMonsterMetadata = Omit<
   Monster,
-  'maxHp' | 'currentHp' | 'ac' | 'init'
+  'maxHp' | 'currentHp' | 'ac' | 'init' | 'isPlayer'
 >;
