@@ -8,7 +8,7 @@ export const Healthbar = ({ currentHp, maxHp, isPlayer }: HealthbarProps) => {
   const percentage = (currentHp / maxHp) * 100;
   return (
     <div
-      className={`relative h-10 rounded-full ${isPlayer ? 'bg-success/50' : 'bg-danger/35'}`}
+      className={`relative h-5 rounded-full ${isPlayer ? 'bg-success/50' : 'bg-danger/35'}`}
     >
       <div
         className={`h-full rounded-full ${isPlayer ? 'bg-success' : 'bg-danger'}`}
