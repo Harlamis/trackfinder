@@ -4,6 +4,8 @@ import { Healthbar } from './Healthbar';
 
 interface EncounterTableProps {
   encounter: Encounter;
+  onNextTurn(): void;
+  onPreviousTurn(): void;
 }
 
 interface EncounterTableRowProps {
@@ -38,11 +40,29 @@ const EncounterTableRow = ({
   );
 };
 
-export const EncounterTable = ({ encounter }: EncounterTableProps) => {
+export const EncounterTable = ({
+  encounter,
+  onNextTurn,
+  onPreviousTurn,
+}: EncounterTableProps) => {
   return (
     <section className='flex flex-col md:col-span-6'>
       <div className='w-full text-2xl text-text-muted'>
-        <h2 className='w-full text-center'>Round: {encounter.currentRound}</h2>
+        <div className='flex w-full items-center justify-around'>
+          <button
+            onClick={onPreviousTurn}
+            className='hidden w-32 rounded-xl bg-accent/50 p-1 text-lg text-text-muted transition-all duration-200 hover:translate-y-0.5 md:block'
+          >
+            &lt;&lt;Previous Turn
+          </button>
+          <h2 className='text-center'>Round: {encounter.currentRound}</h2>
+          <button
+            onClick={onNextTurn}
+            className='hidden w-32 rounded-xl bg-accent p-1 text-text-main transition-all duration-200 hover:translate-y-0.5 md:block'
+          >
+            Next Turn &gt;&gt;
+          </button>
+        </div>
         <div className='flex flex-col gap-5'>
           <div className='hidden grid-cols-12 gap-4 px-4 py-2 text-text-main md:grid'>
             <div className='col-span-1'>Init</div>
