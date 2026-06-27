@@ -19,3 +19,5 @@ export type SidebarMonsterMetadata = Omit<
   Monster,
   'maxHp' | 'currentHp' | 'ac' | 'init' | 'isPlayer'
 >;
+
+export type PanelMode = 'closed' | 'bestiary' | 'inspector';
