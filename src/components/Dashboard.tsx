@@ -1,24 +1,32 @@
 import { useState } from 'react';
 import { MobileHeader } from './MobileHeader';
 import { Sidebar } from './Sidebar';
-import { type Encounter } from '../types';
+import type { PanelMode, Encounter } from '../types';
 import type { SidebarMonsterMetadata } from '../types';
 import { EncounterTable } from './EncounterTable';
 import { INITIAL_ENCOUNTERS } from '../MockData';
 
-
-
 export const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   const [encounters, setEncounters] = useState<Encounter[]>(INITIAL_ENCOUNTERS);
+
   const [raMonsters, setRaMonsters] = useState<SidebarMonsterMetadata[]>([
     { id: 1, name: 'goblin' },
   ]);
+
   const [activeEncounterId, setActiveEncounterId] = useState<number | null>(
     null
   );
+
   const activeEncounter = encounters.find(
     (enc) => enc.id === activeEncounterId
+  );
+
+  const [panelMode, setPanelMode] = useState<PanelMode>('bestiary');
+
+  const [selectedMonsterId, setSelectedMonsterId] = useState<number | null>(
+    null
   );
 
   const handleOpenMenu = () => setIsSidebarOpen(true);
