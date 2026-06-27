@@ -1,3 +1,4 @@
+import { twMerge } from 'tailwind-merge';
 import type { Encounter, Monster } from '../types';
 import { Healthbar } from './Healthbar';
 
@@ -7,11 +8,20 @@ interface EncounterTableProps {
 
 interface EncounterTableRowProps {
   monster: Monster;
+  className?: string;
 }
 
-const EncounterTableRow = ({ monster }: EncounterTableRowProps) => {
+const EncounterTableRow = ({
+  monster,
+  className = '',
+}: EncounterTableRowProps) => {
   return (
-    <div className='flex flex-col gap-3 rounded-lg bg-main-card p-4 md:grid md:grid-cols-12 md:gap-4 md:bg-transparent md:px-4 md:py-2 md:text-text-main'>
+    <div
+      className={twMerge(
+        'flex flex-col gap-3 rounded-lg bg-main-card p-4 md:grid md:grid-cols-12 md:gap-4 md:bg-transparent md:px-4 md:py-2 md:text-text-main',
+        className
+      )}
+    >
       <div className='flex items-center justify-between md:contents'>
         <div className='col-span-1'>{monster.init}</div>
         <div className='col-span-5'>{monster.name}</div>
@@ -42,9 +52,18 @@ export const EncounterTable = ({ encounter }: EncounterTableProps) => {
           </div>
           {encounter.monsters
             .toSorted((a, b) => b.init - a.init)
-            .map((mon) => (
-              <EncounterTableRow monster={mon} key={mon.id} />
-            ))}
+            .map((mon) => {
+              const isActive = encounter.activeMonsterId === mon.id;
+              return (
+                <EncounterTableRow
+                  monster={mon}
+                  key={mon.id}
+                  className={
+                    isActive ? 'border-l-4 border-accent bg-accent/30' : ''
+                  }
+                />
+              );
+            })}
         </div>
       </div>
     </section>
