@@ -94,6 +94,27 @@ export const Dashboard = () => {
     );
   };
 
+  const handleHealthChange = (amount: number) => {
+    if (!selectedMonsterId) return;
+    setEncounters((prevEncounters) => {
+      return prevEncounters.map((enc) => {
+        if (enc.id !== activeEncounterId) return enc;
+
+        return {
+          ...enc,
+          monsters: enc.monsters.map((mon) => {
+            if (mon.id !== selectedMonsterId) return mon;
+            const newHp = Math.min(
+              mon.maxHp,
+              Math.max(0, mon.currentHp + amount)
+            );
+            return { ...mon, currentHp: newHp };
+          }),
+        };
+      });
+    });
+  };
+
   return (
     <div className='min-h-screen bg-main-bg md:grid md:grid-cols-12'>
       <MobileHeader isMenuOpen={isSidebarOpen} onOpenMenu={handleOpenMenu} />
