@@ -1,17 +1,19 @@
-import type { PanelMode } from '../types';
+import type { ActiveMonster, PanelMode } from '../types';
 import ExitCrossIcon from '../assets/exit-cross.svg';
 import { MonsterInspector } from './MonsterInspector';
 
 interface MonsterPanelProps {
   panelMode: PanelMode;
   onClosePanel(): void;
-  selectedMonsterId: number | null;
+  onHealthChange(amount: number): void;
+  activeMonster: ActiveMonster | null;
 }
 
 export const MonsterPanel = ({
   panelMode,
   onClosePanel,
-  selectedMonsterId,
+  onHealthChange,
+  activeMonster,
 }: MonsterPanelProps) => {
   let headerContent: string;
   switch (panelMode) {
@@ -38,9 +40,12 @@ export const MonsterPanel = ({
           //BeastiaryList will be here
           <p>Bestiary</p>
         )}
-        {panelMode === 'inspector' && (
+        {panelMode === 'inspector' && activeMonster && (
           //MonsterInspector will be here
-          <MonsterInspector monster={}
+          <MonsterInspector
+            monster={activeMonster}
+            onHealthChange={onHealthChange}
+          />
         )}
       </div>
     </div>

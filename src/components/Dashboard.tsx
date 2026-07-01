@@ -150,6 +150,7 @@ export const Dashboard = () => {
         <EncounterTable
           encounter={activeEncounter}
           onNextTurn={handleNextTurn}
+          activeMonsters={hydratedMonsters}
           onPreviousTurn={handlePreviousTurn}
         />
       ) : (
