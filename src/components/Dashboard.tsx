@@ -1,18 +1,24 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { MobileHeader } from './MobileHeader';
 import { Sidebar } from './Sidebar';
-import type { PanelMode, Encounter } from '../types';
+import type {
+  PanelMode,
+  Encounter,
+  MonsterTemplate,
+  ActiveMonster,
+} from '../types';
 import type { SidebarMonsterMetadata } from '../types';
 import { EncounterTable } from './EncounterTable';
-import { INITIAL_ENCOUNTERS } from '../MockData';
+import { ENCOUNTERS_MOCK, BESTIARY_MOCK } from '../MockData';
 
+const BESTIARY: MonsterTemplate[] = BESTIARY_MOCK;
 export const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const [encounters, setEncounters] = useState<Encounter[]>(INITIAL_ENCOUNTERS);
+  const [encounters, setEncounters] = useState<Encounter[]>(ENCOUNTERS_MOCK);
 
   const [raMonsters, setRaMonsters] = useState<SidebarMonsterMetadata[]>([
-    { id: 1, name: 'goblin' },
+    { id: 'goblin-001', baseName: 'goblin' },
   ]);
 
   const [activeEncounterId, setActiveEncounterId] = useState<number | null>(
@@ -22,6 +28,19 @@ export const Dashboard = () => {
   const activeEncounter = encounters.find(
     (enc) => enc.id === activeEncounterId
   );
+
+  const hydratedMonsters: ActiveMonster[] = useMemo(() => {
+    return (
+      activeEncounter?.monsters.map((mon) => {
+        const template = BESTIARY.find((base) => base.id === mon.templateId);
+
+        if (!template)
+          throw new Error(`Error: cannot find template for: ${mon.templateId}`);
+
+        return { ...template, ...mon } as ActiveMonster;
+      }) ?? []
+    );
+  }, [activeEncounter]);
 
   const [panelMode, setPanelMode] = useState<PanelMode>('bestiary');
 

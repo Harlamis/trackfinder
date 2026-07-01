@@ -1,5 +1,5 @@
 import { twMerge } from 'tailwind-merge';
-import type { Encounter, Monster } from '../types';
+import type { Encounter, CombatMonster, Monster } from '../types';
 import { Healthbar } from './Healthbar';
 
 interface EncounterTableProps {
@@ -9,7 +9,7 @@ interface EncounterTableProps {
 }
 
 interface EncounterTableRowProps {
-  monster: Monster;
+  monster: CombatMonster;
   className?: string;
 }
 

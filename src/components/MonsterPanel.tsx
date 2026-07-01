@@ -1,5 +1,6 @@
 import type { PanelMode } from '../types';
 import ExitCrossIcon from '../assets/exit-cross.svg';
+import { MonsterInspector } from './MonsterInspector';
 
 interface MonsterPanelProps {
   panelMode: PanelMode;
@@ -39,7 +40,7 @@ export const MonsterPanel = ({
         )}
         {panelMode === 'inspector' && (
           //MonsterInspector will be here
-          <p>Monster information</p>
+          <MonsterInspector monster={}
         )}
       </div>
     </div>

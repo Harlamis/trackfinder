@@ -10,7 +10,7 @@ interface SidebarProps {
   activeEncounterId: number | null;
   onSelectEncounter(id: number): void;
   monsters: SidebarMonsterMetadata[];
-  onSelectMonster(id: number): void;
+  onSelectMonster(id: string): void;
 }
 
 export const Sidebar = ({
