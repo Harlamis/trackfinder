@@ -1,15 +1,21 @@
 import { twMerge } from 'tailwind-merge';
-import type { Encounter, CombatMonster, Monster } from '../types';
+import type {
+  Encounter,
+  CombatMonster,
+  Monster,
+  ActiveMonster,
+} from '../types';
 import { Healthbar } from './Healthbar';
 
 interface EncounterTableProps {
   encounter: Encounter;
+  activeMonsters: ActiveMonster[];
   onNextTurn(): void;
   onPreviousTurn(): void;
 }
 
 interface EncounterTableRowProps {
-  monster: CombatMonster;
+  monster: ActiveMonster;
   className?: string;
 }
 
@@ -26,7 +32,9 @@ const EncounterTableRow = ({
     >
       <div className='flex items-center justify-between md:contents'>
         <div className='col-span-1'>{monster.init}</div>
-        <div className='col-span-5'>{monster.name}</div>
+        <div className='col-span-5'>
+          {monster.customName || monster.baseName}
+        </div>
         <div className='col-span-1'>{monster.ac}</div>
       </div>
       <div className='col-span-5'>
@@ -42,6 +50,7 @@ const EncounterTableRow = ({
 
 export const EncounterTable = ({
   encounter,
+  activeMonsters,
   onNextTurn,
   onPreviousTurn,
 }: EncounterTableProps) => {
@@ -70,7 +79,7 @@ export const EncounterTable = ({
             <div className='col-span-1'>AC</div>
             <div className='col-span-5'>HP</div>
           </div>
-          {encounter.monsters
+          {activeMonsters
             .toSorted((a, b) => b.init - a.init)
             .map((mon) => {
               const isActive = encounter.activeMonsterId === mon.id;

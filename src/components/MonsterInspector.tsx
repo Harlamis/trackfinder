@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import type { Monster } from '../types';
+import type { ActiveMonster, Monster } from '../types';
 import { Healthbar } from './Healthbar';
 
 interface MonsterInspectorProps {
-  monster: Monster;
+  monster: ActiveMonster;
   onHealthChange(amount: number): void;
 }
 
@@ -21,7 +21,9 @@ export const MonsterInspector = ({
   return (
     <div className='flex flex-col gap-4 rounded-b-xl bg-main-card p-4 text-text-main'>
       <div>
-        <h3 className='mb-2 text-xl font-bold'>{monster.name}</h3>
+        <h3 className='mb-2 text-xl font-bold'>
+          {monster.customName || monster.baseName}
+        </h3>
         <Healthbar
           currentHp={monster.currentHp}
           maxHp={monster.maxHp}
