@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { ActiveMonster, Monster } from '../types';
+import type { ActiveMonster} from '../types';
 import { Healthbar } from './Healthbar';
 
 interface MonsterInspectorProps {

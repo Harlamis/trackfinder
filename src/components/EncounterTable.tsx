@@ -1,10 +1,5 @@
 import { twMerge } from 'tailwind-merge';
-import type {
-  Encounter,
-  CombatMonster,
-  Monster,
-  ActiveMonster,
-} from '../types';
+import type { Encounter, ActiveMonster } from '../types';
 import { Healthbar } from './Healthbar';
 
 interface EncounterTableProps {
