@@ -52,6 +52,11 @@ export const Dashboard = () => {
 
   const handleCloseMenu = () => setIsSidebarOpen(false);
 
+  const handleMonsterSelect = (id: number) => {
+    setSelectedMonsterId(id);
+    setPanelMode('inspector');
+  };
+
   const handleNextTurn = () => {
     const encounter = encounters.find((enc) => enc.id === activeEncounterId);
     if (!encounter || encounter.monsters.length == 0) return;
@@ -152,6 +157,8 @@ export const Dashboard = () => {
           onNextTurn={handleNextTurn}
           activeMonsters={hydratedMonsters}
           onPreviousTurn={handlePreviousTurn}
+          selectedMonsterId={selectedMonsterId}
+          onSelectMonster={handleMonsterSelect}
         />
       ) : (
         <div className='flex items-center justify-center text-text-muted md:col-span-6'>
