@@ -142,10 +142,15 @@ export const Dashboard = () => {
       });
     });
   };
+  const handleBestiaryOpen = () => setPanelMode('bestiary');
 
   return (
     <div className='min-h-screen bg-main-bg md:grid md:grid-cols-12'>
-      <MobileHeader isMenuOpen={isSidebarOpen} onOpenMenu={handleOpenMenu} />
+      <MobileHeader
+        isMenuOpen={isSidebarOpen}
+        onOpenMenu={handleOpenMenu}
+        onOpenBestiary={handleBestiaryOpen}
+      />
       <Sidebar
         isOpen={isSidebarOpen}
         onCloseMenu={handleCloseMenu}

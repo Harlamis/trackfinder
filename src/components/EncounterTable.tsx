@@ -61,7 +61,7 @@ export const EncounterTable = ({
 }: EncounterTableProps) => {
   return (
     <section className='flex flex-col md:col-span-6'>
-      <div className='w-full text-2xl text-text-muted'>
+      <div className='w-full text-2xl text-text-muted py-2.5'>
         <div className='flex w-full items-center justify-around'>
           <button
             onClick={onPreviousTurn}
@@ -72,7 +72,7 @@ export const EncounterTable = ({
           <h2 className='text-center'>Round: {encounter.currentRound}</h2>
           <button
             onClick={onNextTurn}
-            className='w-32 rounded-xl bg-accent p-1 text-text-main transition-all duration-200 hover:translate-y-0.5 md:block'
+            className='w-32 rounded-xl bg-accent/50 p-1 text-text-muted text-lg transition-all duration-200 hover:translate-y-0.5 md:block'
           >
             Next Turn &gt;&gt;
           </button>
