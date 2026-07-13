@@ -19,7 +19,7 @@ export const MonsterInspector = ({
     setCustomHealth('');
   };
   return (
-    <div className='flex flex-col gap-4 rounded-b-xl bg-main-card p-4 text-text-main'>
+    <div className='flex flex-col gap-4 rounded-b-xl bg-main-card p-1 text-text-main'>
       <div>
         <h3 className='mb-2 text-xl font-bold'>
           {monster.customName || monster.baseName}

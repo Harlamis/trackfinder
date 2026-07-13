@@ -10,6 +10,7 @@ import type {
 import type { SidebarMonsterMetadata } from '../types';
 import { EncounterTable } from './EncounterTable';
 import { ENCOUNTERS_MOCK, BESTIARY_MOCK } from '../MockData';
+import { MonsterPanel } from './MonsterPanel';
 
 const BESTIARY: MonsterTemplate[] = BESTIARY_MOCK;
 export const Dashboard = () => {
@@ -22,6 +23,10 @@ export const Dashboard = () => {
   ]);
 
   const [activeEncounterId, setActiveEncounterId] = useState<number | null>(
+    null
+  );
+
+  const [selectedMonsterId, setSelectedMonsterId] = useState<number | null>(
     null
   );
 
@@ -42,11 +47,10 @@ export const Dashboard = () => {
     );
   }, [activeEncounter]);
 
-  const [panelMode, setPanelMode] = useState<PanelMode>('bestiary');
+  const selectedMonster =
+    hydratedMonsters.find((mon) => mon.id === selectedMonsterId) || null;
 
-  const [selectedMonsterId, setSelectedMonsterId] = useState<number | null>(
-    null
-  );
+  const [panelMode, setPanelMode] = useState<PanelMode>('bestiary');
 
   const handleOpenMenu = () => setIsSidebarOpen(true);
 
@@ -167,6 +171,12 @@ export const Dashboard = () => {
           </p>
         </div>
       )}
+      <MonsterPanel
+        panelMode={panelMode}
+        activeMonster={selectedMonster}
+        onHealthChange={handleHealthChange}
+        onClosePanel={() => setPanelMode('closed')}
+      />
     </div>
   );
 };
