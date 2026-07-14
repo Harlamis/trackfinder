@@ -126,9 +126,27 @@ export const MonsterInspector = ({
               </div>
             </div>
           </div>
-          {
-            Object.entries(details.speed).map(([type, speed]) => speed && <div> </div>)
-          }
+          {details?.speed && (
+            <div className='flex flex-wrap items-center gap-2 text-lg'>
+              <span className='text-md font-bold tracking-wider text-text-muted uppercase'>
+                Speed:
+              </span>
+              {Object.entries(details.speed)
+                .filter(([type, speed]) => speed > 0)
+                .map(([type, speed]) => {
+                  const label = type === 'walking' ? '' : `${type} `;
+                  return (
+                    <span
+                      key={type}
+                      className='rounded-md border border-border bg-main-bg px-2 py-0.5 font-medium text-text-main capitalize'
+                    >
+                      {label}
+                      {speed} ft.
+                    </span>
+                  );
+                })}
+            </div>
+          )}
         </div>
       ) : (
         <div className='text-sm text-text-muted'>No details available.</div>
