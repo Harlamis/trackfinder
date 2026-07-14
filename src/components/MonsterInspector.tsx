@@ -102,7 +102,7 @@ export const MonsterInspector = ({
           <div className='flex items-center justify-between'>
             <span>
               Level{' '}
-              <span className='rounded-xl bg-main-bg px-3 text-text-main'>
+              <span className='rounded-lg border border-border bg-main-bg px-3 text-text-main'>
                 {details.level}
               </span>
             </span>
@@ -206,6 +206,35 @@ export const MonsterInspector = ({
                     </div>
                   );
                 })}
+              </div>
+            </div>
+          )}
+          {details.loot && details.loot.length > 0 && (
+            <div className='flex flex-col gap-1.5'>
+              <span className='text-xs font-bold tracking-wider text-text-muted uppercase'>
+                Loot:
+              </span>
+              <div className='flex flex-wrap gap-1.5'>
+                {details.loot.map((item, index) => (
+                  <div
+                    key={`${item.name}-${index}`}
+                    className='flex items-center gap-1.5 rounded-md border border-border bg-main-bg px-2.5 py-1 text-xs font-medium text-text-main'
+                  >
+                    {item.quantity > 1 && (
+                      <span className='font-bold text-accent'>
+                        {item.quantity}x
+                      </span>
+                    )}
+
+                    <span>{item.name}</span>
+
+                    {item.value !== undefined && item.value > 0 && (
+                      <span className='text-[10px] text-text-muted'>
+                        ({item.value} gp)
+                      </span>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           )}
