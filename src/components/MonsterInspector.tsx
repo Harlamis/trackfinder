@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { ActiveMonster} from '../types';
+import type { ActiveMonster } from '../types';
 import { Healthbar } from './Healthbar';
 
 interface MonsterInspectorProps {
@@ -18,6 +18,7 @@ export const MonsterInspector = ({
     onHealthChange(multiplier * customHealth);
     setCustomHealth('');
   };
+  const details = monster.details;
   return (
     <div className='flex flex-col gap-4 rounded-b-xl bg-main-card p-1 text-text-main'>
       <div>
@@ -95,6 +96,43 @@ export const MonsterInspector = ({
           </div>
         </div>
       </div>
+      {/* Monster Details */}
+      {details ? (
+        <div className='flex w-full flex-col gap-1 text-2xl text-text-muted'>
+          <div className='flex items-center justify-between'>
+            <span>Level {details.level}</span>
+            <span>{monster.baseName}</span>
+          </div>
+          <div className='flex w-full flex-col justify-center'>
+            <h3 className='w-full text-start text-text-main'>
+              Creature Defences:
+            </h3>
+            <div className='grid w-full grid-cols-4'>
+              <div className='flex flex-col'>
+                <span className='text-text-muted'>AC</span>
+                <span>{monster.ac}</span>
+              </div>
+              <div className='flex flex-col'>
+                <span className='text-text-muted'>FORT</span>
+                <span>{details.savingThrows.fortitude}</span>
+              </div>
+              <div className='flex flex-col'>
+                <span className='text-text-muted'>WILL</span>
+                <span>{details.savingThrows.will}</span>
+              </div>
+              <div className='flex flex-col'>
+                <span className='text-text-muted'>REFL</span>
+                <span>{details.savingThrows.reflex}</span>
+              </div>
+            </div>
+          </div>
+          {
+            Object.entries(details.speed).map(([type, speed]) => speed && <div> </div>)
+          }
+        </div>
+      ) : (
+        <div className='text-sm text-text-muted'>No details available.</div>
+      )}
     </div>
   );
 };
