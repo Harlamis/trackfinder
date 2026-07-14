@@ -22,7 +22,7 @@ export interface MonsterTemplate {
   baseName: string;
   maxHp: number;
   ac: number;
-  details: MonsterDetails;
+  details?: MonsterDetails;
 }
 
 export interface CombatMonster {
