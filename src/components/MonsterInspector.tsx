@@ -122,7 +122,7 @@ export const MonsterInspector = ({
                 </span>
               </div>
               <div className='flex flex-col'>
-                <span className='text-text-muted'>FORTITUDE</span>
+                <span className='text-text-muted'>FORT</span>
                 <span className='rounded-md border border-border bg-main-bg px-2 py-0.5 font-medium text-text-main'>
                   {details.savingThrows.fortitude}
                 </span>
@@ -141,7 +141,7 @@ export const MonsterInspector = ({
               </div>
             </div>
           </div>
-          {details?.speed && (
+          {details.speed && (
             <div className='flex flex-wrap items-center gap-2 text-lg'>
               <span className='text-2xl font-bold tracking-wider text-text-main uppercase'>
                 Speed:
@@ -160,6 +160,53 @@ export const MonsterInspector = ({
                     </span>
                   );
                 })}
+            </div>
+          )}
+          {details.attacks && details.attacks.length > 0 && (
+            <div className='flex flex-col gap-2'>
+              <span className='text-xs font-bold tracking-wider text-text-muted uppercase'>
+                Strikes:
+              </span>
+              <div className='flex flex-col gap-2'>
+                {details.attacks.map((attack, index) => {
+                  const formattedBonus =
+                    attack.bonus >= 0 ? `+${attack.bonus}` : attack.bonus;
+
+                  return (
+                    <div
+                      key={`${attack.name}-${index}`}
+                      className='flex flex-col gap-1.5 rounded-lg border border-border bg-main-bg p-2.5'
+                    >
+                      <div className='flex items-center justify-between'>
+                        <div className='flex items-center gap-2'>
+                          <span className='font-bold text-text-main'>
+                            {attack.name}
+                          </span>
+                          <span className='rounded bg-accent/20 px-1.5 py-0.5 text-[10px] font-semibold text-accent capitalize'>
+                            {attack.type}
+                          </span>
+                        </div>
+                        <span className='text-xl font-extrabold text-accent'>
+                          {formattedBonus}
+                        </span>
+                      </div>
+
+                      {attack.traits.length > 0 && (
+                        <div className='flex flex-wrap gap-1'>
+                          {attack.traits.map((trait) => (
+                            <span
+                              key={trait}
+                              className='rounded border border-border/60 bg-main-card px-1.5 py-0.5 text-[10px] text-text-muted'
+                            >
+                              {trait}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>
