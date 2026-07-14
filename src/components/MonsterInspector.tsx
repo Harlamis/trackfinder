@@ -98,37 +98,52 @@ export const MonsterInspector = ({
       </div>
       {/* Monster Details */}
       {details ? (
-        <div className='flex w-full flex-col gap-1 text-2xl text-text-muted'>
+        <div className='flex w-full flex-col gap-3 text-2xl text-text-muted'>
           <div className='flex items-center justify-between'>
-            <span>Level {details.level}</span>
+            <span>
+              Level{' '}
+              <span className='rounded-xl bg-main-bg px-3 text-text-main'>
+                {details.level}
+              </span>
+            </span>
             <span>{monster.baseName}</span>
           </div>
           <div className='flex w-full flex-col justify-center'>
-            <h3 className='w-full text-start text-text-main'>
-              Creature Defences:
-            </h3>
-            <div className='grid w-full grid-cols-4'>
+            <div className='flex items-center gap-2'>
+              <span className='text-2xl font-bold tracking-wider text-text-main uppercase'>
+                Defences:
+              </span>
+            </div>
+            <div className='grid w-full grid-cols-4 gap-2 p-1'>
               <div className='flex flex-col'>
                 <span className='text-text-muted'>AC</span>
-                <span>{monster.ac}</span>
+                <span className='rounded-md border border-border bg-main-bg px-2 py-0.5 font-medium text-text-main'>
+                  {monster.ac}
+                </span>
               </div>
               <div className='flex flex-col'>
-                <span className='text-text-muted'>FORT</span>
-                <span>{details.savingThrows.fortitude}</span>
+                <span className='text-text-muted'>FORTITUDE</span>
+                <span className='rounded-md border border-border bg-main-bg px-2 py-0.5 font-medium text-text-main'>
+                  {details.savingThrows.fortitude}
+                </span>
               </div>
               <div className='flex flex-col'>
                 <span className='text-text-muted'>WILL</span>
-                <span>{details.savingThrows.will}</span>
+                <span className='rounded-md border border-border bg-main-bg px-2 py-0.5 font-medium text-text-main'>
+                  {details.savingThrows.will}
+                </span>
               </div>
               <div className='flex flex-col'>
-                <span className='text-text-muted'>REFL</span>
-                <span>{details.savingThrows.reflex}</span>
+                <span className='text-text-muted'>REFLEX</span>
+                <span className='rounded-md border border-border bg-main-bg px-2 py-0.5 font-medium text-text-main'>
+                  {details.savingThrows.reflex}
+                </span>
               </div>
             </div>
           </div>
           {details?.speed && (
             <div className='flex flex-wrap items-center gap-2 text-lg'>
-              <span className='text-md font-bold tracking-wider text-text-muted uppercase'>
+              <span className='text-2xl font-bold tracking-wider text-text-main uppercase'>
                 Speed:
               </span>
               {Object.entries(details.speed)
