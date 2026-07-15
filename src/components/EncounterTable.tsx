@@ -9,6 +9,7 @@ interface EncounterTableProps {
   onNextTurn(): void;
   onPreviousTurn(): void;
   onSelectMonster(id: number): void;
+  onOpenBestiary(): void;
 }
 
 interface EncounterTableRowProps {
@@ -58,6 +59,7 @@ export const EncounterTable = ({
   onPreviousTurn,
   onSelectMonster,
   selectedMonsterId,
+  onOpenBestiary,
 }: EncounterTableProps) => {
   return (
     <section className='flex flex-col md:col-span-6'>
@@ -100,6 +102,7 @@ export const EncounterTable = ({
                 />
               );
             })}
+            <button className='hidden md:flex justify-center items-center col-span-12 text-5xl h-10 border border-accent text-accent rounded-lg hover:bg-accent-hover hover:text-text-muted hover:border-0 transition-all duration-300' onClick={onOpenBestiary}>+</button>
         </div>
       </div>
     </section>

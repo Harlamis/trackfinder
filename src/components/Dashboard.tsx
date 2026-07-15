@@ -168,6 +168,7 @@ export const Dashboard = () => {
           onPreviousTurn={handlePreviousTurn}
           selectedMonsterId={selectedMonsterId}
           onSelectMonster={handleMonsterSelect}
+          onOpenBestiary={handleBestiaryOpen}
         />
       ) : (
         <div className='flex items-center justify-center text-text-muted md:col-span-6'>

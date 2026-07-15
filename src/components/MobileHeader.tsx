@@ -24,7 +24,7 @@ export const MobileHeader = ({
           className='w-full rounded-2xl bg-accent text-text-main transition-all duration-200 hover:bg-accent-hover hover:text-text-muted'
           onClick={onOpenBestiary}
         >
-          + Monster
+          + Creature
         </button>
       </div>
     </header>
