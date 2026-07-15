@@ -2,7 +2,7 @@ import type { MonsterTemplate } from '../types';
 import { Healthbar } from './Healthbar';
 
 interface BestiaryListProps {
-  list: MonsterTemplate[];
+  monsters: MonsterTemplate[];
   onSelectMonster(): void;
   onAddMonster(): void;
 }
@@ -57,6 +57,25 @@ export const BestiaryListItem = ({
       >
         +
       </div>
+    </div>
+  );
+};
+
+export const BestiaryList = ({
+  monsters,
+  onSelectMonster,
+  onAddMonster,
+}: BestiaryListProps) => {
+  return (
+    <div className='flex h-full w-full flex-col gap-1.5 overflow-y-auto p-2'>
+      {monsters.map((mon) => (
+        <BestiaryListItem
+          key={mon.id}
+          monster={mon}
+          onAdd={onAddMonster}
+          onSelect={onSelectMonster}
+        />
+      ))}
     </div>
   );
 };
