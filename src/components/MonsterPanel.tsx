@@ -1,14 +1,19 @@
 import { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import type { ActiveMonster, PanelMode } from '../types';
+import { BESTIARY_MOCK } from '../MockData';
 import ExitCrossIcon from '../assets/exit-cross.svg';
 import { MonsterInspector } from './MonsterInspector';
+import { BestiaryList } from './BestiaryList';
 
 interface MonsterPanelProps {
   panelMode: PanelMode;
   onClosePanel(): void;
   onHealthChange(amount: number): void;
   activeMonster: ActiveMonster | null;
+  previewMonster: ActiveMonster | null;
+  onSelectTemplateId(id: string | null): void;
+  onAddMonster(templateId: string | null): void;
 }
 
 export const MonsterPanel = ({
@@ -16,6 +21,9 @@ export const MonsterPanel = ({
   onClosePanel,
   onHealthChange,
   activeMonster,
+  previewMonster,
+  onSelectTemplateId,
+  onAddMonster,
 }: MonsterPanelProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -64,8 +72,30 @@ export const MonsterPanel = ({
 
         <div className='mt-2 flex-1 overflow-y-auto'>
           {panelMode === 'bestiary' && (
-            // BestiaryList will be here
-            <p className='text-text-muted'>Bestiary library coming soon...</p>
+            <>
+              {!previewMonster ? (
+                <BestiaryList
+                  monsters={BESTIARY_MOCK}
+                  onSelectMonster={(id) => onSelectTemplateId(id)}
+                  onAddMonster={(id) => onAddMonster(id)}
+                />
+              ) : (
+                <div className='flex flex-col gap-2'>
+                  <button
+                    className='rounded-md border border-border bg-main-bg px-3 py-1 text-sm text-text-main'
+                    onClick={() => onSelectTemplateId(null)}
+                  >
+                    Back to Library
+                  </button>
+
+                  <MonsterInspector
+                    monster={previewMonster}
+                    isEditable={false}
+                    onHealthChange={() => {}}
+                  />
+                </div>
+              )}
+            </>
           )}
           {panelMode === 'inspector' && activeMonster && (
             <MonsterInspector

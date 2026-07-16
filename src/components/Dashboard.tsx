@@ -30,6 +30,10 @@ export const Dashboard = () => {
     null
   );
 
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
+    null
+  );
+
   const activeEncounter = encounters.find(
     (enc) => enc.id === activeEncounterId
   );
@@ -144,6 +148,54 @@ export const Dashboard = () => {
   };
   const handleBestiaryOpen = () => setPanelMode('bestiary');
 
+  const selectedTemplate = BESTIARY_MOCK.find(
+    (t) => t.id === selectedTemplateId
+  );
+
+  const fakeActiveMonster: ActiveMonster | null = selectedTemplate
+    ? {
+        ...selectedTemplate,
+        id: -1,
+        templateId: selectedTemplate.id,
+        maxHp: selectedTemplate.maxHp,
+        currentHp: selectedTemplate?.maxHp,
+        init: 0,
+        isPlayer: false,
+      }
+    : null;
+
+  const handleAddMonsterToEncounter = (templateId: string | null) => {
+    if (!templateId) return;
+    const template = BESTIARY.find((t) => t.id === templateId);
+    if (!template) return;
+    if (activeEncounterId === null) return;
+
+    setEncounters((prevEncounters) => {
+      const allIds = prevEncounters.flatMap((e) => e.monsters.map((m) => m.id));
+      const maxId = allIds.length > 0 ? Math.max(...allIds) : 0;
+      const newId = maxId + 1;
+
+      return prevEncounters.map((enc) => {
+        if (enc.id !== activeEncounterId) return enc;
+
+        const newCombatMonster = {
+          id: newId,
+          templateId: template.id,
+          customName: undefined,
+          currentHp: template.maxHp,
+          maxHp: template.maxHp,
+          init: 0,
+          isPlayer: false,
+        };
+
+        return {
+          ...enc,
+          monsters: [...enc.monsters, newCombatMonster],
+        };
+      });
+    });
+  };
+
   return (
     <div className='min-h-screen bg-main-bg md:grid md:grid-cols-12'>
       <MobileHeader
@@ -182,6 +234,9 @@ export const Dashboard = () => {
         activeMonster={selectedMonster}
         onHealthChange={handleHealthChange}
         onClosePanel={() => setPanelMode('closed')}
+        previewMonster={fakeActiveMonster}
+        onSelectTemplateId={setSelectedTemplateId}
+        onAddMonster={handleAddMonsterToEncounter}
       />
     </div>
   );

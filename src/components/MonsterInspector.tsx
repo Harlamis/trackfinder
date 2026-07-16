@@ -1,15 +1,17 @@
 import { useState } from 'react';
-import type { ActiveMonster } from '../types';
+import type { ActiveMonster} from '../types';
 import { Healthbar } from './Healthbar';
 
 interface MonsterInspectorProps {
   monster: ActiveMonster;
   onHealthChange(amount: number): void;
+  isEditable?: boolean;
 }
 
 export const MonsterInspector = ({
   monster,
   onHealthChange,
+  isEditable = true,
 }: MonsterInspectorProps) => {
   const [customHealth, setCustomHealth] = useState<number | ''>('');
 
@@ -31,71 +33,73 @@ export const MonsterInspector = ({
           isPlayer={monster.isPlayer}
         />
       </div>
-      <div className='mt-2 flex flex-col gap-4'>
-        <div className='grid grid-cols-4 gap-2'>
-          <button
-            className='rounded-lg bg-danger py-2 text-center font-bold text-text-main transition-all duration-200 hover:translate-y-1'
-            onClick={() => onHealthChange(-10)}
-          >
-            -10
-          </button>
-          <button
-            className='rounded-lg bg-danger py-2 text-center font-bold text-text-main transition-all duration-200 hover:translate-y-1'
-            onClick={() => onHealthChange(-5)}
-          >
-            -5
-          </button>
-          <button
-            className='rounded-lg bg-danger py-2 text-center font-bold text-text-main transition-all duration-200 hover:translate-y-1'
-            onClick={() => onHealthChange(-1)}
-          >
-            -1
-          </button>
-          <input
-            type='number'
-            placeholder='Enter value'
-            onChange={(e) =>
-              setCustomHealth(e.target.value ? Number(e.target.value) : '')
-            }
-            className='w-full rounded-lg border border-border bg-main-bg text-center text-sm text-text-main placeholder-text-muted focus:border-accent focus:outline-none'
-          />
-        </div>
-        <div className='grid grid-cols-4 gap-4'>
-          <button
-            className='rounded-lg bg-success py-2 text-center font-bold text-text-main transition-all duration-200 hover:translate-y-1'
-            onClick={() => onHealthChange(10)}
-          >
-            +10
-          </button>
-          <button
-            className='rounded-lg bg-success py-2 text-center font-bold text-text-main transition-all duration-200 hover:translate-y-1'
-            onClick={() => onHealthChange(5)}
-          >
-            +5
-          </button>
-          <button
-            className='rounded-lg bg-success py-2 text-center font-bold text-text-main transition-all duration-200 hover:translate-y-1'
-            onClick={() => onHealthChange(1)}
-          >
-            +1
-          </button>
-
-          <div className='grid grid-cols-2 gap-1'>
+      {isEditable && (
+        <div className='mt-2 flex flex-col gap-4'>
+          <div className='grid grid-cols-4 gap-2'>
             <button
               className='rounded-lg bg-danger py-2 text-center font-bold text-text-main transition-all duration-200 hover:translate-y-1'
-              onClick={() => handleCustomSubmit(-1)}
+              onClick={() => onHealthChange(-10)}
             >
-              -
+              -10
+            </button>
+            <button
+              className='rounded-lg bg-danger py-2 text-center font-bold text-text-main transition-all duration-200 hover:translate-y-1'
+              onClick={() => onHealthChange(-5)}
+            >
+              -5
+            </button>
+            <button
+              className='rounded-lg bg-danger py-2 text-center font-bold text-text-main transition-all duration-200 hover:translate-y-1'
+              onClick={() => onHealthChange(-1)}
+            >
+              -1
+            </button>
+            <input
+              type='number'
+              placeholder='Enter value'
+              onChange={(e) =>
+                setCustomHealth(e.target.value ? Number(e.target.value) : '')
+              }
+              className='w-full rounded-lg border border-border bg-main-bg text-center text-sm text-text-main placeholder-text-muted focus:border-accent focus:outline-none'
+            />
+          </div>
+          <div className='grid grid-cols-4 gap-4'>
+            <button
+              className='rounded-lg bg-success py-2 text-center font-bold text-text-main transition-all duration-200 hover:translate-y-1'
+              onClick={() => onHealthChange(10)}
+            >
+              +10
             </button>
             <button
               className='rounded-lg bg-success py-2 text-center font-bold text-text-main transition-all duration-200 hover:translate-y-1'
-              onClick={() => handleCustomSubmit(1)}
+              onClick={() => onHealthChange(5)}
             >
-              +
+              +5
             </button>
+            <button
+              className='rounded-lg bg-success py-2 text-center font-bold text-text-main transition-all duration-200 hover:translate-y-1'
+              onClick={() => onHealthChange(1)}
+            >
+              +1
+            </button>
+
+            <div className='grid grid-cols-2 gap-1'>
+              <button
+                className='rounded-lg bg-danger py-2 text-center font-bold text-text-main transition-all duration-200 hover:translate-y-1'
+                onClick={() => handleCustomSubmit(-1)}
+              >
+                -
+              </button>
+              <button
+                className='rounded-lg bg-success py-2 text-center font-bold text-text-main transition-all duration-200 hover:translate-y-1'
+                onClick={() => handleCustomSubmit(1)}
+              >
+                +
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
       {/* Monster Details */}
       {details ? (
         <div className='flex w-full flex-col gap-3 text-2xl text-text-muted'>

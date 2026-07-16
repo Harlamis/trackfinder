@@ -3,14 +3,14 @@ import { Healthbar } from './Healthbar';
 
 interface BestiaryListProps {
   monsters: MonsterTemplate[];
-  onSelectMonster(): void;
-  onAddMonster(): void;
+  onSelectMonster(id: string | null): void;
+  onAddMonster(id: string | null): void;
 }
 
 interface BestiaryListItemProps {
   monster: MonsterTemplate;
-  onSelect(): void;
-  onAdd(): void;
+  onSelect(id: string | null): void;
+  onAdd(id: string | null): void;
 }
 
 export const BestiaryListItem = ({
@@ -21,7 +21,7 @@ export const BestiaryListItem = ({
   return (
     <div className='flex h-auto min-h-20 w-full flex-row bg-main-card px-3 py-2.5'>
       <div
-        onClick={onSelect}
+        onClick={() => onSelect(monster.id)}
         className='flex flex-1 cursor-pointer flex-row transition-all hover:bg-accent/5'
       >
         <span className='mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-main-bg font-bold text-accent'>
@@ -52,7 +52,7 @@ export const BestiaryListItem = ({
         </div>
       </div>
       <div
-        onClick={onAdd}
+        onClick={() => onAdd(monster.id)}
         className='flex h-12 w-12 cursor-pointer items-center justify-center rounded-lg text-2xl text-accent transition-all hover:bg-accent/10'
       >
         +
