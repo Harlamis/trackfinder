@@ -11,6 +11,7 @@ interface SidebarProps {
   onSelectEncounter(id: number): void;
   monsters: SidebarMonsterMetadata[];
   onSelectMonster(id: string): void;
+  onAddEncounter(): void;
 }
 
 export const Sidebar = ({
@@ -21,6 +22,7 @@ export const Sidebar = ({
   onSelectEncounter,
   monsters,
   onSelectMonster,
+  onAddEncounter,
 }: SidebarProps) => {
   return (
     <>
@@ -36,6 +38,7 @@ export const Sidebar = ({
         <div className='flex w-full flex-col gap-2.5'>
           <h2 className='text-2xl text-text-main'>Your Encounters</h2>
           <EncountersList
+            onAdd={onAddEncounter}
             encounters={encounters}
             activeEncounterId={activeEncounterId}
             onSelectActive={onSelectEncounter}

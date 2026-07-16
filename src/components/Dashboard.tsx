@@ -197,6 +197,23 @@ export const Dashboard = () => {
     });
   };
 
+  const handleAddEncounter = () => {
+    const allIds = encounters.map((enc) => enc.id);
+    const maxId = allIds.length > 0 ? Math.max(...allIds) : 0;
+    const newId = maxId + 1;
+    setEncounters((prevEncounters) => {
+      const newEncounter: Encounter = {
+        id: newId,
+        name: `Encounter ${newId}`,
+        currentRound: 1,
+        activeMonsterId: null,
+        monsters: [],
+      };
+      return [...prevEncounters, newEncounter];
+    });
+    setActiveEncounterId(newId);
+  };
+
   return (
     <div className='min-h-screen bg-main-bg md:grid md:grid-cols-12'>
       <MobileHeader
@@ -212,6 +229,7 @@ export const Dashboard = () => {
         onSelectEncounter={setActiveEncounterId}
         monsters={raMonsters}
         onSelectMonster={() => false}
+        onAddEncounter={handleAddEncounter}
       />
       {activeEncounter ? (
         <EncounterTable

@@ -5,6 +5,7 @@ interface EncountersListItemProps {
   encounter: Encounter;
   isActive: boolean;
   onSelect(id: number): void;
+  onAdd(): void;
 }
 
 export const EncountersListItem = ({
@@ -27,12 +28,14 @@ interface EncountersListProps {
   encounters: Encounter[];
   activeEncounterId: number | null;
   onSelectActive(id: number): void;
+  onAdd(): void;
 }
 
 export const EncountersList = ({
   encounters,
   activeEncounterId,
   onSelectActive,
+  onAdd,
 }: EncountersListProps) => {
   return (
     <ul className='flex w-full flex-col gap-2.5'>
@@ -42,9 +45,13 @@ export const EncountersList = ({
           encounter={enc}
           isActive={enc.id === activeEncounterId}
           onSelect={onSelectActive}
+          onAdd={onAdd}
         />
       ))}
-      <button className='flex items-center justify-center rounded-md border-2 border-accent p-2.5 hover:bg-accent/70'>
+      <button
+        className='flex items-center justify-center rounded-md border-2 border-accent p-2.5 hover:bg-accent/70'
+        onClick={onAdd}
+      >
         <img src={AddCrossIcon} alt='Add Encounter' />
       </button>
     </ul>
