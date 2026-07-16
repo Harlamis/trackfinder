@@ -1,3 +1,4 @@
+import { use, useState } from 'react';
 import type { MonsterTemplate } from '../types';
 import { Healthbar } from './Healthbar';
 
@@ -27,7 +28,7 @@ export const BestiaryListItem = ({
         <span className='mr-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-main-bg font-bold text-accent'>
           {monster.details?.level || '?'}
         </span>
-        <div className='flex flex-col'>
+        <div className='flex w-full flex-col'>
           <div className='flex w-full items-center justify-between pr-2'>
             <span className='font-bold text-text-main'>{monster.baseName}</span>
             <span className='rounded border border-border bg-main-bg px-2 py-0.5 text-xs text-text-muted'>
@@ -66,16 +67,37 @@ export const BestiaryList = ({
   onSelectMonster,
   onAddMonster,
 }: BestiaryListProps) => {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredMonsters = monsters.filter((mon) =>
+    mon.baseName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className='flex h-full w-full flex-col gap-1.5 overflow-y-auto p-2'>
-      {monsters.map((mon) => (
-        <BestiaryListItem
-          key={mon.id}
-          monster={mon}
-          onAdd={onAddMonster}
-          onSelect={onSelectMonster}
-        />
-      ))}
+    <div className='p-2> flex h-full w-full flex-col gap-2'>
+      <input
+        type='text'
+        placeholder='Search Monster...'
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className='w-full rounded-lg border border-border bg-main-bg px-3 py-2 text-sm text-text-main placeholder-text-muted focus:border-accent focus:outline-none'
+      />
+      <div className='flex w-full flex-col gap-1.5'>
+        {filteredMonsters.length > 0 ? (
+          filteredMonsters.map((mon) => (
+            <BestiaryListItem
+              key={mon.id}
+              monster={mon}
+              onAdd={onAddMonster}
+              onSelect={onSelectMonster}
+            />
+          ))
+        ) : (
+          <p className='py-4 text-center text-sm text-text-muted'>
+            No monsters found
+          </p>
+        )}
+      </div>
     </div>
   );
 };
