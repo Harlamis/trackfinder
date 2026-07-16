@@ -11,6 +11,7 @@ import type { SidebarMonsterMetadata } from '../types';
 import { EncounterTable } from './EncounterTable';
 import { ENCOUNTERS_MOCK, BESTIARY_MOCK } from '../MockData';
 import { MonsterPanel } from './MonsterPanel';
+import { getRandomInt } from '../Random';
 
 const BESTIARY: MonsterTemplate[] = BESTIARY_MOCK;
 export const Dashboard = () => {
@@ -184,7 +185,7 @@ export const Dashboard = () => {
           customName: undefined,
           currentHp: template.maxHp,
           maxHp: template.maxHp,
-          init: 0,
+          init: getRandomInt(1, 20),
           isPlayer: false,
         };
 
