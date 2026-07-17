@@ -12,6 +12,8 @@ interface SidebarProps {
   monsters: SidebarMonsterMetadata[];
   onSelectMonster(id: string): void;
   onAddEncounter(): void;
+  onDeleteEncounter(id: number): void;
+  onRenameEncounter(id: number, newName: string): void;
 }
 
 export const Sidebar = ({
@@ -23,6 +25,8 @@ export const Sidebar = ({
   monsters,
   onSelectMonster,
   onAddEncounter,
+  onDeleteEncounter,
+  onRenameEncounter,
 }: SidebarProps) => {
   return (
     <>
