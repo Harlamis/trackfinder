@@ -6,12 +6,16 @@ interface EncountersListItemProps {
   isActive: boolean;
   onSelect(id: number): void;
   onAdd(): void;
+  onDelete(id: number): void;
+  onRename(id: number, newName: string): void;
 }
 
 export const EncountersListItem = ({
   encounter,
   isActive,
   onSelect,
+  onRename,
+  onDelete,
 }: EncountersListItemProps) => {
   return (
     <li
@@ -29,6 +33,8 @@ interface EncountersListProps {
   activeEncounterId: number | null;
   onSelectActive(id: number): void;
   onAdd(): void;
+  onDeleteEncounter(id: number): void;
+  onRenameEncounter(id: number, newName: string): void;
 }
 
 export const EncountersList = ({
@@ -36,6 +42,8 @@ export const EncountersList = ({
   activeEncounterId,
   onSelectActive,
   onAdd,
+  onDeleteEncounter,
+  onRenameEncounter,
 }: EncountersListProps) => {
   return (
     <ul className='flex w-full flex-col gap-2.5'>
@@ -46,6 +54,8 @@ export const EncountersList = ({
           isActive={enc.id === activeEncounterId}
           onSelect={onSelectActive}
           onAdd={onAdd}
+          onDelete={onDeleteEncounter}
+          onRename={onRenameEncounter}
         />
       ))}
       <button

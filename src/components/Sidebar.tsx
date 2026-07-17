@@ -46,6 +46,8 @@ export const Sidebar = ({
             encounters={encounters}
             activeEncounterId={activeEncounterId}
             onSelectActive={onSelectEncounter}
+            onDeleteEncounter={onDeleteEncounter}
+            onRenameEncounter={onRenameEncounter}
           />
         </div>
 
