@@ -214,6 +214,13 @@ export const Dashboard = () => {
     setActiveEncounterId(newId);
   };
 
+  const handleDeleteEncounter = (id: number) => {
+    setEncounters((prevEncounters) =>
+      prevEncounters.filter((enc) => enc.id !== id)
+    );
+    if (id === activeEncounterId) setActiveEncounterId(null);
+  };
+
   return (
     <div className='min-h-screen bg-main-bg md:grid md:grid-cols-12'>
       <MobileHeader
