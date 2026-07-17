@@ -1,5 +1,7 @@
 import type { Encounter } from '../types';
 import AddCrossIcon from '../assets/add-cross.svg';
+import PencilIcon from '../assets/pencil.svg';
+import TrashIcon from '../assets/trashcan.svg';
 
 interface EncountersListItemProps {
   encounter: Encounter;
@@ -20,10 +22,38 @@ export const EncountersListItem = ({
   return (
     <li
       onClick={() => onSelect(encounter.id)}
-      className={`flex justify-between border-t-2 border-b-2 border-border p-2.5 text-xl text-text-muted transition-all duration-300 hover:bg-accent/10 hover:text-text-main ${isActive && 'bg-accent/10 text-text-main!'}`}
+      className={`flex justify-between items-center border-t-2 border-b-2 border-border p-2.5 text-xl text-text-muted transition-all duration-300 hover:bg-accent/10 hover:text-text-main ${isActive && 'bg-accent/10 text-text-main!'}`}
     >
       <div>{encounter.name}</div>
       <div>{encounter.currentRound}</div>
+      <div className='flex gap-2'>
+        <button
+          className='rounded p-2 transition-colors duration-200 hover:bg-accent/20'
+          title='Edit encounter name'
+          onClick={(e) => {
+            e.stopPropagation();
+            const newName = prompt(
+              'Please enter new name of the Encounter',
+              encounter.name
+            );
+
+            if (newName) onRename(encounter.id, newName);
+          }}
+        >
+          <img src={PencilIcon} alt='edit' className='h-6 w-6' />
+        </button>
+        <button
+          className='rounded p-2 transition-colors duration-200 hover:bg-accent/20'
+          title='Delete encounter'
+          onClick={(e) => {
+            e.stopPropagation();
+            if (confirm(`Are you sure you want to delete ${encounter.name}?`))
+              onDelete(encounter.id);
+          }}
+        >
+          <img src={TrashIcon} alt='delete' className='h-6 w-6' />
+        </button>
+      </div>
     </li>
   );
 };

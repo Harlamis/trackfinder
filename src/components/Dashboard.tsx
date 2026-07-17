@@ -247,7 +247,7 @@ export const Dashboard = () => {
         monsters={raMonsters}
         onSelectMonster={() => false}
         onAddEncounter={handleAddEncounter}
-        onDeleteEncounter={handleAddEncounter}
+        onDeleteEncounter={handleDeleteEncounter}
         onRenameEncounter={handleRenameEncounter}
       />
       {activeEncounter ? (
