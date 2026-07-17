@@ -221,6 +221,16 @@ export const Dashboard = () => {
     if (id === activeEncounterId) setActiveEncounterId(null);
   };
 
+  const handleRenameEncounter = (id: number, newName: string) => {
+    if (id == null || newName.trim() === '') return;
+    setEncounters((prevEncounters) => {
+      return prevEncounters.map((enc) => {
+        if (enc.id !== id) return enc;
+        return { ...enc, name: newName };
+      });
+    });
+  };
+
   return (
     <div className='min-h-screen bg-main-bg md:grid md:grid-cols-12'>
       <MobileHeader
