@@ -231,6 +231,85 @@ export const Dashboard = () => {
     });
   };
 
+  const handleDeleteMonster = (id: number) => {
+    if (activeEncounter?.activeMonsterId === id) handleNextTurn();
+    setEncounters((prevEncounters) =>
+      prevEncounters.map((enc) => {
+        if (enc.id !== activeEncounterId) return enc;
+        return {
+          ...enc,
+          monsters: enc.monsters.filter((mon) => mon.id !== id),
+        };
+      })
+    );
+    if (id === selectedMonsterId) {
+      setSelectedMonsterId(null);
+      setPanelMode('closed');
+    }
+  };
+
+  const handleUpdateMonster = (
+    monsterId: number,
+    changes: Partial<ActiveMonster>
+  ) => {
+    const validatedChanges: Partial<ActiveMonster> = { ...changes };
+
+    if ('init' in validatedChanges && validatedChanges.init !== undefined) {
+      if (Number.isNaN(validatedChanges.init)) {
+        delete validatedChanges.init;
+      }
+    }
+
+    if ('ac' in validatedChanges && validatedChanges.ac !== undefined) {
+      if (Number.isNaN(validatedChanges.ac)) {
+        delete validatedChanges.ac;
+      }
+    }
+
+    if ('maxHp' in validatedChanges && validatedChanges.maxHp !== undefined) {
+      if (Number.isNaN(validatedChanges.maxHp) || validatedChanges.maxHp < 0) {
+        delete validatedChanges.maxHp;
+      }
+    }
+
+    if (
+      'customName' in validatedChanges &&
+      validatedChanges.customName !== undefined
+    ) {
+      validatedChanges.customName = validatedChanges.customName.trim();
+      if (validatedChanges.customName === '') {
+        validatedChanges.customName = undefined;
+      }
+    }
+
+    setEncounters((prevEncounters) =>
+      prevEncounters.map((enc) => {
+        if (enc.id !== activeEncounterId) return enc;
+
+        return {
+          ...enc,
+          monsters: enc.monsters.map((mon) => {
+            if (mon.id !== monsterId) return mon;
+
+            const updatedMonster = { ...mon, ...validatedChanges };
+
+            if (
+              'maxHp' in validatedChanges &&
+              updatedMonster.maxHp !== undefined
+            ) {
+              updatedMonster.currentHp = Math.min(
+                updatedMonster.currentHp,
+                updatedMonster.maxHp
+              );
+            }
+
+            return updatedMonster;
+          }),
+        };
+      })
+    );
+  };
+
   return (
     <div className='min-h-screen bg-main-bg md:grid md:grid-cols-12'>
       <MobileHeader
