@@ -151,7 +151,13 @@ const EncounterTableRow = ({
         )}
       </div>
 
-      <div className='col-span-5 flex flex-col gap-2'>
+      <div
+        className={
+          editingField === 'maxHp'
+            ? 'col-span-5 flex flex-col gap-2'
+            : 'col-span-5 flex items-center'
+        }
+      >
         {editingField === 'maxHp' ? (
           <>
             <div className='text-xs text-text-muted'>Editing max HP</div>
@@ -170,18 +176,20 @@ const EncounterTableRow = ({
           </>
         ) : (
           <div
-            className='group relative cursor-pointer'
+            className='group relative w-full cursor-pointer'
             onClick={(e) => {
               e.stopPropagation();
               setTempValue(String(monster.maxHp));
               setEditingField('maxHp');
             }}
           >
-            <Healthbar
-              currentHp={monster.currentHp}
-              maxHp={monster.maxHp}
-              isPlayer={monster.isPlayer}
-            />
+            <div className='w-full'>
+              <Healthbar
+                currentHp={monster.currentHp}
+                maxHp={monster.maxHp}
+                isPlayer={monster.isPlayer}
+              />
+            </div>
             <span className='pointer-events-none absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1 rounded-full bg-main-bg/90 px-2 py-0.5 text-[10px] text-text-muted opacity-90 transition-opacity duration-200 group-hover:opacity-100'>
               <img src={PencilIcon} alt='Edit max HP' className='h-3 w-3' />
               Edit
