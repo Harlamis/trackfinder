@@ -338,6 +338,7 @@ export const Dashboard = () => {
           selectedMonsterId={selectedMonsterId}
           onSelectMonster={handleMonsterSelect}
           onOpenBestiary={handleBestiaryOpen}
+          onUpdateMonster={handleUpdateMonster}
         />
       ) : (
         <div className='flex items-center justify-center text-text-muted md:col-span-6'>
