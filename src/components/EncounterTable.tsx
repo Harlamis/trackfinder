@@ -88,11 +88,13 @@ const EncounterTableRow = ({
       </div>
 
       <div className='col-span-5 flex items-center'>
-        <Healthbar
-          currentHp={monster.currentHp}
-          maxHp={monster.maxHp}
-          isPlayer={monster.isPlayer}
-        />
+        <div className='w-full'>
+          <Healthbar
+            currentHp={monster.currentHp}
+            maxHp={monster.maxHp}
+            isPlayer={monster.isPlayer}
+          />
+        </div>
       </div>
     </div>
   );
