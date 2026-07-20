@@ -12,6 +12,7 @@ import { EncounterTable } from './EncounterTable';
 import { ENCOUNTERS_MOCK, BESTIARY_MOCK } from '../MockData';
 import { MonsterPanel } from './MonsterPanel';
 import { getRandomInt } from '../Random';
+import { encounterService } from '../EncounterService';
 
 const BESTIARY: MonsterTemplate[] = BESTIARY_MOCK;
 export const Dashboard = () => {
@@ -19,7 +20,7 @@ export const Dashboard = () => {
 
   const [encounters, setEncounters] = useState<Encounter[]>(ENCOUNTERS_MOCK);
 
-  const [raMonsters, setRaMonsters] = useState<SidebarMonsterMetadata[]>([
+  const [raMonsters] = useState<SidebarMonsterMetadata[]>([
     { id: 'goblin-001', baseName: 'goblin' },
   ]);
 
@@ -67,85 +68,46 @@ export const Dashboard = () => {
   };
 
   const handleNextTurn = () => {
-    const encounter = encounters.find((enc) => enc.id === activeEncounterId);
-    if (!encounter || encounter.monsters.length == 0) return;
-    const sorted = encounter.monsters.toSorted((a, b) => b.init - a.init);
-    const currentIndex = sorted.findIndex(
-      (mon) => mon.id === encounter.activeMonsterId
-    );
-    let nextIndex = currentIndex + 1;
-    let currentRound;
-    if (nextIndex >= sorted.length) {
-      currentRound = encounter.currentRound + 1;
-      nextIndex = 0;
-    } else {
-      currentRound = encounter.currentRound;
-    }
-
-    const nextMonsterId = sorted[nextIndex].id;
-
     setEncounters((prevEncounters) =>
       prevEncounters.map((enc) => {
         if (enc.id !== activeEncounterId) return enc;
-        return {
-          ...enc,
-          currentRound: currentRound,
-          activeMonsterId: nextMonsterId,
-        };
+        return encounterService.nextTurn(enc);
       })
     );
   };
   const handlePreviousTurn = () => {
     const encounter = encounters.find((enc) => enc.id === activeEncounterId);
-    if (!encounter || encounter.monsters.length == 0) return;
+    if (!encounter || encounter.monsters.length === 0) return;
+
     const sorted = encounter.monsters.toSorted((a, b) => b.init - a.init);
     const currentIndex = sorted.findIndex(
       (mon) => mon.id === encounter.activeMonsterId
     );
     if (encounter.currentRound === 1 && currentIndex <= 0) return;
-    let nextIndex = currentIndex - 1;
-    let currentRound;
-    if (nextIndex < 0) {
-      if (encounter.currentRound <= 0) return;
-      currentRound = encounter.currentRound - 1;
-      nextIndex = sorted.length - 1;
-    } else {
-      currentRound = encounter.currentRound;
-    }
-
-    const nextMonsterId = sorted[nextIndex].id;
 
     setEncounters((prevEncounters) =>
       prevEncounters.map((enc) => {
         if (enc.id !== activeEncounterId) return enc;
-        return {
-          ...enc,
-          currentRound: currentRound,
-          activeMonsterId: nextMonsterId,
-        };
+        return encounterService.previousTurn(enc);
       })
     );
   };
 
   const handleHealthChange = (amount: number) => {
     if (!selectedMonsterId) return;
-    setEncounters((prevEncounters) => {
-      return prevEncounters.map((enc) => {
+    setEncounters((prevEncounters) =>
+      prevEncounters.map((enc) => {
         if (enc.id !== activeEncounterId) return enc;
-
         return {
           ...enc,
-          monsters: enc.monsters.map((mon) => {
-            if (mon.id !== selectedMonsterId) return mon;
-            const newHp = Math.min(
-              mon.maxHp,
-              Math.max(0, mon.currentHp + amount)
-            );
-            return { ...mon, currentHp: newHp };
-          }),
+          monsters: encounterService.applyHpDelta(
+            enc.monsters,
+            selectedMonsterId,
+            amount
+          ),
         };
-      });
-    });
+      })
+    );
   };
   const handleBestiaryOpen = () => setPanelMode('bestiary');
 
@@ -172,26 +134,16 @@ export const Dashboard = () => {
     if (activeEncounterId === null) return;
 
     setEncounters((prevEncounters) => {
-      const allIds = prevEncounters.flatMap((e) => e.monsters.map((m) => m.id));
-      const maxId = allIds.length > 0 ? Math.max(...allIds) : 0;
-      const newId = maxId + 1;
-
       return prevEncounters.map((enc) => {
         if (enc.id !== activeEncounterId) return enc;
 
-        const newCombatMonster = {
-          id: newId,
-          templateId: template.id,
-          customName: undefined,
-          currentHp: template.maxHp,
-          maxHp: template.maxHp,
-          init: getRandomInt(1, 20),
-          isPlayer: false,
-        };
-
+        const added = encounterService.addMonster(enc, template);
+        const randomInit = getRandomInt(1, 20);
         return {
-          ...enc,
-          monsters: [...enc.monsters, newCombatMonster],
+          ...added,
+          monsters: added.monsters.map((mon, index, list) =>
+            index === list.length - 1 ? { ...mon, init: randomInit } : mon
+          ),
         };
       });
     });
@@ -231,80 +183,20 @@ export const Dashboard = () => {
     });
   };
 
-  const handleDeleteMonster = (id: number) => {
-    if (activeEncounter?.activeMonsterId === id) handleNextTurn();
-    setEncounters((prevEncounters) =>
-      prevEncounters.map((enc) => {
-        if (enc.id !== activeEncounterId) return enc;
-        return {
-          ...enc,
-          monsters: enc.monsters.filter((mon) => mon.id !== id),
-        };
-      })
-    );
-    if (id === selectedMonsterId) {
-      setSelectedMonsterId(null);
-      setPanelMode('closed');
-    }
-  };
-
   const handleUpdateMonster = (
     monsterId: number,
     changes: Partial<ActiveMonster>
   ) => {
-    const validatedChanges: Partial<ActiveMonster> = { ...changes };
-
-    if ('init' in validatedChanges && validatedChanges.init !== undefined) {
-      if (Number.isNaN(validatedChanges.init)) {
-        delete validatedChanges.init;
-      }
-    }
-
-    if ('ac' in validatedChanges && validatedChanges.ac !== undefined) {
-      if (Number.isNaN(validatedChanges.ac)) {
-        delete validatedChanges.ac;
-      }
-    }
-
-    if ('maxHp' in validatedChanges && validatedChanges.maxHp !== undefined) {
-      if (Number.isNaN(validatedChanges.maxHp) || validatedChanges.maxHp < 0) {
-        delete validatedChanges.maxHp;
-      }
-    }
-
-    if (
-      'customName' in validatedChanges &&
-      validatedChanges.customName !== undefined
-    ) {
-      validatedChanges.customName = validatedChanges.customName.trim();
-      if (validatedChanges.customName === '') {
-        validatedChanges.customName = undefined;
-      }
-    }
-
     setEncounters((prevEncounters) =>
       prevEncounters.map((enc) => {
         if (enc.id !== activeEncounterId) return enc;
-
         return {
           ...enc,
-          monsters: enc.monsters.map((mon) => {
-            if (mon.id !== monsterId) return mon;
-
-            const updatedMonster = { ...mon, ...validatedChanges };
-
-            if (
-              'maxHp' in validatedChanges &&
-              updatedMonster.maxHp !== undefined
-            ) {
-              updatedMonster.currentHp = Math.min(
-                updatedMonster.currentHp,
-                updatedMonster.maxHp
-              );
-            }
-
-            return updatedMonster;
-          }),
+          monsters: encounterService.updateMonster(
+            enc.monsters,
+            monsterId,
+            changes
+          ),
         };
       })
     );
