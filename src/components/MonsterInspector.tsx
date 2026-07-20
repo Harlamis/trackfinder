@@ -1,19 +1,49 @@
 import { useState } from 'react';
-import type { ActiveMonster} from '../types';
+import type { ActiveMonster } from '../types';
 import { Healthbar } from './Healthbar';
 
 interface MonsterInspectorProps {
   monster: ActiveMonster;
   onHealthChange(amount: number): void;
+  onUpdateMonster(monsterId: number, changes: Partial<ActiveMonster>): void;
   isEditable?: boolean;
 }
 
 export const MonsterInspector = ({
   monster,
   onHealthChange,
+  onUpdateMonster,
   isEditable = true,
 }: MonsterInspectorProps) => {
   const [customHealth, setCustomHealth] = useState<number | ''>('');
+  const [nameInput, setNameInput] = useState(
+    monster.customName ?? monster.baseName
+  );
+  const [acInput, setAcInput] = useState(String(monster.ac));
+  const [maxHpInput, setMaxHpInput] = useState(String(monster.maxHp));
+
+  const inputClasses =
+    'w-full rounded-lg border border-border bg-main-bg px-3 py-2 text-sm text-text-main placeholder-text-muted focus:border-accent focus:outline-none';
+
+  const commitNameChange = () => {
+    onUpdateMonster(monster.id, {
+      customName: nameInput.trim() || undefined,
+    });
+  };
+
+  const commitAcChange = () => {
+    const acValue = Number(acInput);
+    if (!Number.isNaN(acValue)) {
+      onUpdateMonster(monster.id, { ac: acValue });
+    }
+  };
+
+  const commitMaxHpChange = () => {
+    const maxHpValue = Number(maxHpInput);
+    if (!Number.isNaN(maxHpValue)) {
+      onUpdateMonster(monster.id, { maxHp: maxHpValue });
+    }
+  };
 
   const handleCustomSubmit = (multiplier: 1 | -1) => {
     if (!customHealth) return;
@@ -23,15 +53,62 @@ export const MonsterInspector = ({
   const details = monster.details;
   return (
     <div className='flex flex-col gap-4 rounded-b-xl bg-main-card p-1 text-text-main'>
-      <div>
-        <h3 className='mb-2 text-xl font-bold'>
-          {monster.customName || monster.baseName}
-        </h3>
-        <Healthbar
-          currentHp={monster.currentHp}
-          maxHp={monster.maxHp}
-          isPlayer={monster.isPlayer}
-        />
+      <div className='flex flex-col gap-3'>
+        <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
+          <div className='flex flex-col gap-1'>
+            <label className='text-sm text-text-muted'>Name</label>
+            <input
+              type='text'
+              value={nameInput}
+              onChange={(e) => setNameInput(e.target.value)}
+              onBlur={isEditable ? commitNameChange : undefined}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && isEditable) commitNameChange();
+              }}
+              disabled={!isEditable}
+              className={`${inputClasses} ${!isEditable ? 'cursor-not-allowed opacity-70' : ''}`}
+            />
+          </div>
+
+          <div className='grid grid-cols-2 gap-3'>
+            <div className='flex flex-col gap-1'>
+              <label className='text-sm text-text-muted'>AC</label>
+              <input
+                type='number'
+                value={acInput}
+                onChange={(e) => setAcInput(e.target.value)}
+                onBlur={isEditable ? commitAcChange : undefined}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && isEditable) commitAcChange();
+                }}
+                disabled={!isEditable}
+                className={`${inputClasses} ${!isEditable ? 'cursor-not-allowed opacity-70' : ''}`}
+              />
+            </div>
+            <div className='flex flex-col gap-1'>
+              <label className='text-sm text-text-muted'>Max HP</label>
+              <input
+                type='number'
+                value={maxHpInput}
+                onChange={(e) => setMaxHpInput(e.target.value)}
+                onBlur={isEditable ? commitMaxHpChange : undefined}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && isEditable) commitMaxHpChange();
+                }}
+                disabled={!isEditable}
+                className={`${inputClasses} ${!isEditable ? 'cursor-not-allowed opacity-70' : ''}`}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <Healthbar
+            currentHp={monster.currentHp}
+            maxHp={monster.maxHp}
+            isPlayer={monster.isPlayer}
+          />
+        </div>
       </div>
       {isEditable && (
         <div className='mt-2 flex flex-col gap-4'>
@@ -151,7 +228,7 @@ export const MonsterInspector = ({
                 Speed:
               </span>
               {Object.entries(details.speed)
-                .filter(([type, speed]) => speed > 0)
+                .filter(([, speed]) => speed > 0)
                 .map(([type, speed]) => {
                   const label = type === 'walking' ? '' : `${type} `;
                   return (

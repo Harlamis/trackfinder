@@ -351,6 +351,7 @@ export const Dashboard = () => {
         panelMode={panelMode}
         activeMonster={selectedMonster}
         onHealthChange={handleHealthChange}
+        onUpdateMonster={handleUpdateMonster}
         onClosePanel={() => setPanelMode('closed')}
         previewMonster={fakeActiveMonster}
         onSelectTemplateId={setSelectedTemplateId}

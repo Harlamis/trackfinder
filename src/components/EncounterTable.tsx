@@ -1,6 +1,5 @@
 import { twMerge } from 'tailwind-merge';
 import type { Encounter, ActiveMonster } from '../types';
-import PencilIcon from '../assets/pencil.svg';
 import { Healthbar } from './Healthbar';
 import { useState } from 'react';
 
@@ -30,35 +29,18 @@ const EncounterTableRow = ({
   onSelectMonster,
   onUpdateMonster,
 }: EncounterTableRowProps) => {
-  const [editingField, setEditingField] = useState<
-    'init' | 'ac' | 'name' | 'maxHp' | null
-  >(null);
+  const [isEditingInit, setIsEditingInit] = useState(false);
   const [tempValue, setTempValue] = useState('');
 
   const inputClasses =
     'w-full rounded-lg border border-border bg-main-bg px-3 py-2 text-sm text-text-main placeholder-text-muted focus:border-accent focus:outline-none';
 
-  const commitChanges = () => {
-    if (!editingField) return;
-
-    if (editingField === 'name') {
-      const trimmed = tempValue.trim();
-      onUpdateMonster(monster.id, {
-        customName: trimmed === '' ? undefined : trimmed,
-      });
-    } else {
-      const newValue = Number(tempValue);
-      if (!Number.isNaN(newValue)) {
-        if (editingField === 'init')
-          onUpdateMonster(monster.id, { init: newValue });
-        if (editingField === 'ac')
-          onUpdateMonster(monster.id, { ac: newValue });
-        if (editingField === 'maxHp')
-          onUpdateMonster(monster.id, { maxHp: newValue });
-      }
+  const commitInitChange = () => {
+    const newInit = Number(tempValue);
+    if (!Number.isNaN(newInit)) {
+      onUpdateMonster(monster.id, { init: newInit });
     }
-
-    setEditingField(null);
+    setIsEditingInit(false);
     setTempValue('');
   };
 
@@ -72,7 +54,7 @@ const EncounterTableRow = ({
       )}
     >
       <div className='flex items-center justify-between md:contents'>
-        {editingField === 'init' ? (
+        {isEditingInit ? (
           <input
             type='number'
             placeholder={String(monster.init)}
@@ -80,9 +62,9 @@ const EncounterTableRow = ({
             autoFocus={true}
             className={inputClasses + ' col-span-1'}
             onChange={(e) => setTempValue(e.target.value)}
-            onBlur={commitChanges}
+            onBlur={commitInitChange}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') commitChanges();
+              if (e.key === 'Enter') commitInitChange();
             }}
           />
         ) : (
@@ -91,111 +73,26 @@ const EncounterTableRow = ({
             onClick={(e) => {
               e.stopPropagation();
               setTempValue(String(monster.init));
-              setEditingField('init');
+              setIsEditingInit(true);
             }}
           >
             {monster.init}
           </div>
         )}
 
-        {editingField === 'name' ? (
-          <input
-            type='text'
-            placeholder={monster.customName || monster.baseName}
-            value={tempValue}
-            autoFocus={true}
-            className={inputClasses + ' col-span-5'}
-            onChange={(e) => setTempValue(e.target.value)}
-            onBlur={commitChanges}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') commitChanges();
-            }}
-          />
-        ) : (
-          <div
-            className='col-span-5 cursor-pointer'
-            onClick={(e) => {
-              e.stopPropagation();
-              setTempValue(monster.customName ?? monster.baseName);
-              setEditingField('name');
-            }}
-          >
-            {monster.customName || monster.baseName}
-          </div>
-        )}
+        <div className='col-span-5'>
+          {monster.customName || monster.baseName}
+        </div>
 
-        {editingField === 'ac' ? (
-          <input
-            type='number'
-            placeholder={String(monster.ac)}
-            value={tempValue}
-            autoFocus={true}
-            className={inputClasses + ' col-span-1'}
-            onChange={(e) => setTempValue(e.target.value)}
-            onBlur={commitChanges}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') commitChanges();
-            }}
-          />
-        ) : (
-          <div
-            className='col-span-1 cursor-pointer'
-            onClick={(e) => {
-              e.stopPropagation();
-              setTempValue(String(monster.ac));
-              setEditingField('ac');
-            }}
-          >
-            {monster.ac}
-          </div>
-        )}
+        <div className='col-span-1'>{monster.ac}</div>
       </div>
 
-      <div
-        className={
-          editingField === 'maxHp'
-            ? 'col-span-5 flex flex-col gap-2'
-            : 'col-span-5 flex items-center'
-        }
-      >
-        {editingField === 'maxHp' ? (
-          <>
-            <div className='text-xs text-text-muted'>Editing max HP</div>
-            <input
-              type='number'
-              placeholder={String(monster.maxHp)}
-              value={tempValue}
-              autoFocus={true}
-              className={inputClasses}
-              onChange={(e) => setTempValue(e.target.value)}
-              onBlur={commitChanges}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') commitChanges();
-              }}
-            />
-          </>
-        ) : (
-          <div
-            className='group relative w-full cursor-pointer'
-            onClick={(e) => {
-              e.stopPropagation();
-              setTempValue(String(monster.maxHp));
-              setEditingField('maxHp');
-            }}
-          >
-            <div className='w-full'>
-              <Healthbar
-                currentHp={monster.currentHp}
-                maxHp={monster.maxHp}
-                isPlayer={monster.isPlayer}
-              />
-            </div>
-            <span className='pointer-events-none absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1 rounded-full bg-main-bg/90 px-2 py-0.5 text-[10px] text-text-muted opacity-90 transition-opacity duration-200 group-hover:opacity-100'>
-              <img src={PencilIcon} alt='Edit max HP' className='h-3 w-3' />
-              Edit
-            </span>
-          </div>
-        )}
+      <div className='col-span-5 flex items-center'>
+        <Healthbar
+          currentHp={monster.currentHp}
+          maxHp={monster.maxHp}
+          isPlayer={monster.isPlayer}
+        />
       </div>
     </div>
   );

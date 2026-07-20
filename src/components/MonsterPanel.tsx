@@ -10,6 +10,7 @@ interface MonsterPanelProps {
   panelMode: PanelMode;
   onClosePanel(): void;
   onHealthChange(amount: number): void;
+  onUpdateMonster(monsterId: number, changes: Partial<ActiveMonster>): void;
   activeMonster: ActiveMonster | null;
   previewMonster: ActiveMonster | null;
   onSelectTemplateId(id: string | null): void;
@@ -20,6 +21,7 @@ export const MonsterPanel = ({
   panelMode,
   onClosePanel,
   onHealthChange,
+  onUpdateMonster,
   activeMonster,
   previewMonster,
   onSelectTemplateId,
@@ -92,6 +94,7 @@ export const MonsterPanel = ({
                     monster={previewMonster}
                     isEditable={false}
                     onHealthChange={() => {}}
+                    onUpdateMonster={() => {}}
                   />
                 </div>
               )}
@@ -99,8 +102,10 @@ export const MonsterPanel = ({
           )}
           {panelMode === 'inspector' && activeMonster && (
             <MonsterInspector
+              key={activeMonster.id}
               monster={activeMonster}
               onHealthChange={onHealthChange}
+              onUpdateMonster={onUpdateMonster}
             />
           )}
         </div>
