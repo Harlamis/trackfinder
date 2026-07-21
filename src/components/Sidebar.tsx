@@ -51,13 +51,13 @@ export const Sidebar = ({
           />
         </div>
 
-        <div className='flex w-full flex-col gap-2.5'>
+        {/* <div className='flex w-full flex-col gap-2.5'>
           <h2 className='text-2xl text-text-main'>Recently added</h2>
           <RAMonstersList
             monsters={monsters}
             onSelectMonster={onSelectMonster}
           />
-        </div>
+        </div> */}
       </div>
       {isOpen && (
         <div
