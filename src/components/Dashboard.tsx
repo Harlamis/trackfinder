@@ -9,7 +9,8 @@ import type {
 } from '../types';
 import type { SidebarMonsterMetadata } from '../types';
 import { EncounterTable } from './EncounterTable';
-import { ENCOUNTERS_MOCK, BESTIARY_MOCK } from '../MockData';
+import { BESTIARY_MOCK } from '../data/mockMonsters';
+import { ENCOUNTERS_MOCK } from '../data/mockEncounters';
 import { MonsterPanel } from './MonsterPanel';
 import { getRandomInt } from '../Random';
 import { encounterService } from '../EncounterService';
