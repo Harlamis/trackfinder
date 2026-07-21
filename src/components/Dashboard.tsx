@@ -13,6 +13,7 @@ import { ENCOUNTERS_MOCK, BESTIARY_MOCK } from '../MockData';
 import { MonsterPanel } from './MonsterPanel';
 import { getRandomInt } from '../Random';
 import { encounterService } from '../EncounterService';
+import { BestiaryService } from '../BestiaryService';
 
 const BESTIARY: MonsterTemplate[] = BESTIARY_MOCK;
 export const Dashboard = () => {
@@ -41,17 +42,9 @@ export const Dashboard = () => {
   );
 
   const hydratedMonsters: ActiveMonster[] = useMemo(() => {
-    return (
-      activeEncounter?.monsters.map((mon) => {
-        const template = BESTIARY.find((base) => base.id === mon.templateId);
-
-        if (!template)
-          throw new Error(`Error: cannot find template for: ${mon.templateId}`);
-
-        return { ...template, ...mon } as ActiveMonster;
-      }) ?? []
-    );
-  }, [activeEncounter]);
+    const monsters = activeEncounter?.monsters ?? [];
+    return BestiaryService.hydrateMonsters(monsters, BESTIARY);
+  }, [activeEncounter?.monsters]);
 
   const selectedMonster =
     hydratedMonsters.find((mon) => mon.id === selectedMonsterId) || null;
