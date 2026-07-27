@@ -1,16 +1,26 @@
-import { BESTIARY_MOCK } from '../data/mockMonsters';
-import type { MonsterTemplate } from '../types';
+import type {
+  ActiveMonsterDto,
+  AddMonsterToEncounterDto,
+  MonsterTemplateDto,
+  UpdateMonsterDto,
+} from '../types';
+import api from './axiosConfig';
 
-const fakeDelay = (ms: number) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
 export const monsterApi = {
-  getAllMonsters: async (): Promise<MonsterTemplate[]> => {
-    await fakeDelay(300);
-    return BESTIARY_MOCK;
+  getAllTemplates: async (): Promise<MonsterTemplateDto[]> => {
+    const response = await api.get('/v1/templates');
+    return response.data;
   },
-  getMonsterById: async (id: string): Promise<MonsterTemplate | null> => {
-    await fakeDelay(300);
-    const monster = BESTIARY_MOCK.find((m) => m.id === id);
-    return monster || null;
+  addMonsterToEncounter: async (
+    dto: AddMonsterToEncounterDto
+  ): Promise<ActiveMonsterDto> => {
+    const response = await api.post('/encounters/monsters', dto);
+    return response.data;
+  },
+  updateMonster: async (dto: UpdateMonsterDto): Promise<void> => {
+    await api.patch('/encounters/monsters', dto);
+  },
+  deleteMonster: async (id: number): Promise<void> => {
+    await api.delete(`/encounters/monsters/${id}`);
   },
 };
