@@ -1,4 +1,5 @@
-import type { ActiveMonster, CombatMonster, MonsterTemplate } from './types';
+import { monsterApi } from './api/monsterApi';
+import type { MonsterTemplate } from './types';
 
 export interface BestiaryFilters {
   query?: string;
@@ -7,27 +8,28 @@ export interface BestiaryFilters {
 }
 
 export const BestiaryService = {
-  hydrateMonsters: (
-    combatmonsters: CombatMonster[],
-    templates: MonsterTemplate[]
-  ): ActiveMonster[] => {
-    const templateMap = new Map(templates.map((t) => [t.id, t]));
-    return combatmonsters.map((cm) => {
-      const template = templateMap.get(cm.templateId);
-      if (!template)
-        return {
-          id: cm.id,
-          templateId: cm.templateId,
-          baseName: 'Unknown Monster',
-          customName: cm.customName,
-          currentHp: cm.currentHp,
-          maxHp: cm.currentHp,
-          ac: 10,
-          init: cm.init,
-          isPlayer: cm.isPlayer ?? false,
-        } as ActiveMonster;
-      return { ...template, ...cm } as ActiveMonster;
-    });
+
+  loadTemplates: async (): Promise<MonsterTemplate[]> => {
+    const dtos = await monsterApi.getAllTemplates();
+    const templates = dtos.map(dto => {
+      let parsedDetails = undefined;
+      if (dto.detailsJson) {
+        try {
+          parsedDetails = JSON.parse(dto.detailsJson);
+        } catch (e) {
+          console.error(`Could not parse details payload for template id: ${dto.id}`, e);
+        }
+      }
+      const template: MonsterTemplate = {
+        id: dto.id,
+        baseName: dto.baseName,
+        maxHp: dto.maxHp,
+        ac: dto.ac,
+        details: parsedDetails,
+      }
+      return template;
+    })
+    return templates;
   },
 
   filterBestiary: (
