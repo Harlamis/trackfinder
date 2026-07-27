@@ -116,7 +116,7 @@ export interface UpdateMonsterDto {
 }
 
 export interface MonsterTemplateDto {
-  id: number;
+  id: string;
   baseName: string;
   maxHp: number;
   ac: number;
