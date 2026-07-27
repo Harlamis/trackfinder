@@ -73,3 +73,52 @@ export interface MonsterDetails {
 }
 
 export type PanelMode = 'closed' | 'bestiary' | 'inspector';
+
+export interface EncounterDto {
+  id: number;
+  name: string;
+  currentRound: number;
+  activeMonsterId: number;
+  monsters: ActiveMonsterDto[];
+}
+
+export interface CreateEncounterDto {
+  name: string;
+}
+
+export interface UpdateEncounterDto {
+  id: number;
+  name?: string;
+  activeMonsterId?: number | null;
+  currentRound?: number;
+}
+
+export interface ActiveMonsterDto {
+  id: number;
+  encounterId: number;
+  templateId: number;
+  name: string;
+  maxHp: number;
+  currentHp: number;
+  ac: number;
+  init: number | null;
+}
+
+export interface AddMonsterToEncounterDto {
+  encounterId: number;
+  templateId: number;
+}
+
+export interface UpdateMonsterDto {
+  id: number;
+  currentHp?: number;
+  init?: number;
+}
+
+export interface MonsterTemplateDto {
+  id: number;
+  baseName: string;
+  maxHp: number;
+  ac: number;
+  detailsJson: string;
+}
