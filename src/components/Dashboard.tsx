@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { MobileHeader } from './MobileHeader';
 import { Sidebar } from './Sidebar';
 import type {
@@ -6,25 +6,22 @@ import type {
   Encounter,
   MonsterTemplate,
   ActiveMonster,
+  EncounterDto,
+  ActiveMonsterDto,
 } from '../types';
 import type { SidebarMonsterMetadata } from '../types';
 import { EncounterTable } from './EncounterTable';
-import { BESTIARY_MOCK } from '../data/mockMonsters';
-import { ENCOUNTERS_MOCK } from '../data/mockEncounters';
-import { MonsterPanel } from './MonsterPanel';
 import { getRandomInt } from '../Random';
 import { encounterService } from '../EncounterService';
 import { BestiaryService } from '../BestiaryService';
+import { encounterApi } from '../api/encounterApi';
 
-const BESTIARY: MonsterTemplate[] = BESTIARY_MOCK;
 export const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const [encounters, setEncounters] = useState<Encounter[]>(ENCOUNTERS_MOCK);
+  const [encounters, setEncounters] = useState<EncounterDto[]>([]);
 
-  const [raMonsters] = useState<SidebarMonsterMetadata[]>([
-    { id: 'goblin-001', baseName: 'goblin' },
-  ]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [activeEncounterId, setActiveEncounterId] = useState<number | null>(
     null
@@ -42,15 +39,24 @@ export const Dashboard = () => {
     (enc) => enc.id === activeEncounterId
   );
 
-  const hydratedMonsters: ActiveMonster[] = useMemo(() => {
-    const monsters = activeEncounter?.monsters ?? [];
-    return BestiaryService.hydrateMonsters(monsters, BESTIARY);
-  }, [activeEncounter?.monsters]);
+  const hydratedMonsters: ActiveMonsterDto[] = activeEncounter?.monsters ?? [];
 
   const selectedMonster =
     hydratedMonsters.find((mon) => mon.id === selectedMonsterId) || null;
 
   const [panelMode, setPanelMode] = useState<PanelMode>('bestiary');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await encounterApi.getAll();
+        setEncounters(data);
+      } catch (e) {
+        console.error('Could not fetch encounters data', e);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleOpenMenu = () => setIsSidebarOpen(true);
 
@@ -143,21 +149,10 @@ export const Dashboard = () => {
     });
   };
 
-  const handleAddEncounter = () => {
-    const allIds = encounters.map((enc) => enc.id);
-    const maxId = allIds.length > 0 ? Math.max(...allIds) : 0;
-    const newId = maxId + 1;
-    setEncounters((prevEncounters) => {
-      const newEncounter: Encounter = {
-        id: newId,
-        name: `Encounter ${newId}`,
-        currentRound: 1,
-        activeMonsterId: null,
-        monsters: [],
-      };
-      return [...prevEncounters, newEncounter];
-    });
-    setActiveEncounterId(newId);
+  const handleAddEncounter = async () => {
+    const newEnc = await encounterService.createEncounter('New Encounter');
+    setEncounters((prev) => [...prev, newEnc]);
+    setActiveEncounterId(newEnc.id);
   };
 
   const handleDeleteEncounter = (id: number) => {
