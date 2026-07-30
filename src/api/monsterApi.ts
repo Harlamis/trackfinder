@@ -14,13 +14,13 @@ export const monsterApi = {
   addMonsterToEncounter: async (
     dto: AddMonsterToEncounterDto
   ): Promise<ActiveMonsterDto> => {
-    const response = await api.post('/encounters/monsters', dto);
+    const response = await api.post('/v1/encounters/monsters', dto);
     return response.data;
   },
   updateMonster: async (dto: UpdateMonsterDto): Promise<void> => {
-    await api.patch('/encounters/monsters', dto);
+    await api.patch('/v1/encounters/monsters', dto);
   },
   deleteMonster: async (id: number): Promise<void> => {
-    await api.delete(`/encounters/monsters/${id}`);
+    await api.delete(`/v1/encounters/monsters/${id}`);
   },
 };
