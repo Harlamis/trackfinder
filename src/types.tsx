@@ -43,7 +43,7 @@ export interface MonsterDetails {
     walking: number;
     flying: number;
     swimming: number;
-    borrrowing: number;
+    burrowing: number;
     climbing: number;
   };
   savingThrows: {
