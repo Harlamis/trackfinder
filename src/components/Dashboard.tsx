@@ -93,18 +93,22 @@ export const Dashboard = () => {
     );
   };
 
-  const handleHealthChange = (amount: number) => {
+  const handleHealthChange = async (amount: number) => {
     if (!selectedMonsterId) return;
+    if (!activeEncounter) return;
+
+    const updatedMonsters = await encounterService.applyHpDelta(
+      activeEncounter.monsters,
+      selectedMonsterId,
+      amount
+    );
+
     setEncounters((prevEncounters) =>
       prevEncounters.map((enc) => {
         if (enc.id !== activeEncounterId) return enc;
         return {
           ...enc,
-          monsters: encounterService.applyHpDelta(
-            enc.monsters,
-            selectedMonsterId,
-            amount
-          ),
+          monsters: updatedMonsters,
         };
       })
     );
