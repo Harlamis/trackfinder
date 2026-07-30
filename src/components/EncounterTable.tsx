@@ -4,7 +4,7 @@ import { Healthbar } from './Healthbar';
 import { useState } from 'react';
 
 interface EncounterTableProps {
-  encounter: Encounter;
+  encounter: Pick<Encounter, 'currentRound' | 'activeMonsterId'>;
   activeMonsters: ActiveMonster[];
   selectedMonsterId: number | null;
   onNextTurn(): void;

@@ -2,7 +2,6 @@ import { encounterApi } from './api/encounterApi';
 import { monsterApi } from './api/monsterApi';
 import type {
   ActiveMonsterDto,
-  Encounter,
   EncounterDto,
   UpdateMonsterDto,
 } from './types';
@@ -30,12 +29,22 @@ export const encounterService = {
     return newMonster;
   },
 
-  nextTurn: (encounter: Encounter): Encounter => {
+  nextTurn: <
+    T extends {
+      monsters: Array<{ id: number; init: number | null }>;
+      activeMonsterId: number | null;
+      currentRound: number;
+    },
+  >(
+    encounter: T
+  ): T => {
     if (encounter.monsters.length === 0) {
-      return { ...encounter, activeMonsterId: null };
+      return { ...encounter, activeMonsterId: null } as T;
     }
 
-    const sorted = [...encounter.monsters].sort((a, b) => b.init - a.init);
+    const sorted = [...encounter.monsters].sort(
+      (a, b) => (b.init ?? 0) - (a.init ?? 0)
+    );
     const currentIndex = sorted.findIndex(
       (m) => m.id === encounter.activeMonsterId
     );
@@ -56,15 +65,25 @@ export const encounterService = {
       ...encounter,
       activeMonsterId: sorted[nextIndex].id,
       currentRound: newRound,
-    };
+    } as T;
   },
 
-  previousTurn: (encounter: Encounter): Encounter => {
+  previousTurn: <
+    T extends {
+      monsters: Array<{ id: number; init: number | null }>;
+      activeMonsterId: number | null;
+      currentRound: number;
+    },
+  >(
+    encounter: T
+  ): T => {
     if (encounter.monsters.length === 0) {
       return { ...encounter, activeMonsterId: null };
     }
 
-    const sorted = [...encounter.monsters].sort((a, b) => b.init - a.init);
+    const sorted = [...encounter.monsters].sort(
+      (a, b) => (b.init ?? 0) - (a.init ?? 0)
+    );
     const currentIndex = sorted.findIndex(
       (m) => m.id === encounter.activeMonsterId
     );
@@ -86,13 +105,23 @@ export const encounterService = {
     };
   },
 
-  resetEncounter: (encounter: Encounter): Encounter => {
-    const sorted = [...encounter.monsters].sort((a, b) => b.init - a.init);
+  resetEncounter: <
+    T extends {
+      monsters: Array<{ id: number; init: number | null }>;
+      activeMonsterId: number | null;
+      currentRound: number;
+    },
+  >(
+    encounter: T
+  ): T => {
+    const sorted = [...encounter.monsters].sort(
+      (a, b) => (b.init ?? 0) - (a.init ?? 0)
+    );
     return {
       ...encounter,
       currentRound: 1,
       activeMonsterId: sorted.length > 0 ? sorted[0].id : null,
-    };
+    } as T;
   },
 
   updateMonster: async (

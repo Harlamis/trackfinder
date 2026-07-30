@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
-import type { ActiveMonster, PanelMode } from '../types';
-import { BESTIARY_MOCK } from '../MockData';
+import type { ActiveMonster, MonsterTemplate, PanelMode } from '../types';
 import ExitCrossIcon from '../assets/exit-cross.svg';
 import { MonsterInspector } from './MonsterInspector';
 import { BestiaryList } from './BestiaryList';
@@ -13,6 +12,7 @@ interface MonsterPanelProps {
   onUpdateMonster(monsterId: number, changes: Partial<ActiveMonster>): void;
   activeMonster: ActiveMonster | null;
   previewMonster: ActiveMonster | null;
+  templates: MonsterTemplate[];
   onSelectTemplateId(id: string | null): void;
   onAddMonster(templateId: string | null): void;
 }
@@ -24,6 +24,7 @@ export const MonsterPanel = ({
   onUpdateMonster,
   activeMonster,
   previewMonster,
+  templates,
   onSelectTemplateId,
   onAddMonster,
 }: MonsterPanelProps) => {
@@ -77,7 +78,7 @@ export const MonsterPanel = ({
             <>
               {!previewMonster ? (
                 <BestiaryList
-                  monsters={BESTIARY_MOCK}
+                  monsters={templates}
                   onSelectMonster={(id) => onSelectTemplateId(id)}
                   onAddMonster={(id) => onAddMonster(id)}
                 />

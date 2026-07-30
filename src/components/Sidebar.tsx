@@ -1,16 +1,13 @@
 import burgerMenuIcon from '../assets/burger-menu-icon.svg';
-import type { Encounter, SidebarMonsterMetadata } from '../types';
+import type { EncounterDto } from '../types';
 import { EncountersList } from './EncountersList';
-import { RAMonstersList } from './RAMonstersList';
 
 interface SidebarProps {
   isOpen: boolean;
   onCloseMenu(): void;
-  encounters: Encounter[];
+  encounters: EncounterDto[];
   activeEncounterId: number | null;
   onSelectEncounter(id: number): void;
-  monsters: SidebarMonsterMetadata[];
-  onSelectMonster(id: string): void;
   onAddEncounter(): void;
   onDeleteEncounter(id: number): void;
   onRenameEncounter(id: number, newName: string): void;
@@ -22,8 +19,6 @@ export const Sidebar = ({
   encounters,
   activeEncounterId,
   onSelectEncounter,
-  monsters,
-  onSelectMonster,
   onAddEncounter,
   onDeleteEncounter,
   onRenameEncounter,

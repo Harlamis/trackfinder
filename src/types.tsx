@@ -97,11 +97,13 @@ export interface ActiveMonsterDto {
   id: number;
   encounterId: number;
   templateId: string;
-  name: string;
+  name?: string;
+  customName?: string;
   maxHp: number;
   currentHp: number;
   ac: number;
   init: number | null;
+  isPlayer?: boolean;
 }
 
 export interface AddMonsterToEncounterDto {

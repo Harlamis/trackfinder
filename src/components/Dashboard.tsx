@@ -3,15 +3,12 @@ import { MobileHeader } from './MobileHeader';
 import { Sidebar } from './Sidebar';
 import type {
   PanelMode,
-  Encounter,
   MonsterTemplate,
   ActiveMonster,
   EncounterDto,
-  ActiveMonsterDto,
 } from '../types';
-import type { SidebarMonsterMetadata } from '../types';
 import { EncounterTable } from './EncounterTable';
-import { getRandomInt } from '../Random';
+import { MonsterPanel } from './MonsterPanel';
 import { encounterService } from '../EncounterService';
 import { BestiaryService } from '../BestiaryService';
 import { encounterApi } from '../api/encounterApi';
@@ -20,17 +17,13 @@ export const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [encounters, setEncounters] = useState<EncounterDto[]>([]);
-
-  const [isLoading, setIsLoading] = useState(false);
-
+  const [templates, setTemplates] = useState<MonsterTemplate[]>([]);
   const [activeEncounterId, setActiveEncounterId] = useState<number | null>(
     null
   );
-
   const [selectedMonsterId, setSelectedMonsterId] = useState<number | null>(
     null
   );
-
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
     null
   );
@@ -39,7 +32,22 @@ export const Dashboard = () => {
     (enc) => enc.id === activeEncounterId
   );
 
-  const hydratedMonsters: ActiveMonsterDto[] = activeEncounter?.monsters ?? [];
+  type HydratedEncounter = Omit<EncounterDto, 'monsters'> & {
+    monsters: ActiveMonster[];
+  };
+
+  const activeEncounterHydrated = useMemo<HydratedEncounter | null>(() => {
+    if (!activeEncounter) return null;
+    return {
+      ...activeEncounter,
+      monsters: BestiaryService.hydrateMonsters(
+        activeEncounter.monsters,
+        templates
+      ),
+    };
+  }, [activeEncounter, templates]);
+
+  const hydratedMonsters = activeEncounterHydrated?.monsters ?? [];
 
   const selectedMonster =
     hydratedMonsters.find((mon) => mon.id === selectedMonsterId) || null;
@@ -49,10 +57,14 @@ export const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await encounterApi.getAll();
+        const [data, loadedTemplates] = await Promise.all([
+          encounterApi.getAll(),
+          BestiaryService.loadTemplates(),
+        ]);
         setEncounters(data);
+        setTemplates(loadedTemplates);
       } catch (e) {
-        console.error('Could not fetch encounters data', e);
+        console.error('Could not fetch encounters or templates', e);
       }
     };
     fetchData();
@@ -67,29 +79,49 @@ export const Dashboard = () => {
     setPanelMode('inspector');
   };
 
-  const handleNextTurn = () => {
+  const handleNextTurn = async () => {
+    if (!activeEncounterHydrated) return;
+
+    const updatedEncounter = encounterService.nextTurn(activeEncounterHydrated);
+    await encounterApi.update({
+      id: updatedEncounter.id,
+      activeMonsterId: updatedEncounter.activeMonsterId,
+      currentRound: updatedEncounter.currentRound,
+    });
     setEncounters((prevEncounters) =>
-      prevEncounters.map((enc) => {
-        if (enc.id !== activeEncounterId) return enc;
-        return encounterService.nextTurn(enc);
-      })
+      prevEncounters.map((enc) =>
+        enc.id !== activeEncounterId
+          ? enc
+          : {
+              ...enc,
+              activeMonsterId: updatedEncounter.activeMonsterId,
+              currentRound: updatedEncounter.currentRound,
+            }
+      )
     );
   };
-  const handlePreviousTurn = () => {
-    const encounter = encounters.find((enc) => enc.id === activeEncounterId);
-    if (!encounter || encounter.monsters.length === 0) return;
 
-    const sorted = encounter.monsters.toSorted((a, b) => b.init - a.init);
-    const currentIndex = sorted.findIndex(
-      (mon) => mon.id === encounter.activeMonsterId
+  const handlePreviousTurn = async () => {
+    if (!activeEncounterHydrated) return;
+
+    const updatedEncounter = encounterService.previousTurn(
+      activeEncounterHydrated
     );
-    if (encounter.currentRound === 1 && currentIndex <= 0) return;
-
+    await encounterApi.update({
+      id: updatedEncounter.id,
+      activeMonsterId: updatedEncounter.activeMonsterId,
+      currentRound: updatedEncounter.currentRound,
+    });
     setEncounters((prevEncounters) =>
-      prevEncounters.map((enc) => {
-        if (enc.id !== activeEncounterId) return enc;
-        return encounterService.previousTurn(enc);
-      })
+      prevEncounters.map((enc) =>
+        enc.id !== activeEncounterId
+          ? enc
+          : {
+              ...enc,
+              activeMonsterId: updatedEncounter.activeMonsterId,
+              currentRound: updatedEncounter.currentRound,
+            }
+      )
     );
   };
 
@@ -115,9 +147,7 @@ export const Dashboard = () => {
   };
   const handleBestiaryOpen = () => setPanelMode('bestiary');
 
-  const selectedTemplate = BESTIARY_MOCK.find(
-    (t) => t.id === selectedTemplateId
-  );
+  const selectedTemplate = templates.find((t) => t.id === selectedTemplateId);
 
   const fakeActiveMonster: ActiveMonster | null = selectedTemplate
     ? {
@@ -134,19 +164,19 @@ export const Dashboard = () => {
   const handleAddMonsterToEncounter = async (templateId: string | null) => {
     if (!templateId) return;
     if (!activeEncounterId) return;
+
     const newMonster = await encounterService.addMonster(
       activeEncounterId,
       templateId
     );
-    setEncounters((prevEncounters) => {
-      return prevEncounters.map((enc) => {
-        if (enc.id !== activeEncounterId) return enc;
-        return {
-          ...enc,
-          monsters: [...enc.monsters, newMonster],
-        };
-      });
-    });
+
+    setEncounters((prevEncounters) =>
+      prevEncounters.map((enc) =>
+        enc.id !== activeEncounterId
+          ? enc
+          : { ...enc, monsters: [...enc.monsters, newMonster] }
+      )
+    );
   };
 
   const handleAddEncounter = async () => {
@@ -155,26 +185,27 @@ export const Dashboard = () => {
     setActiveEncounterId(newEnc.id);
   };
 
-  const handleDeleteEncounter = (id: number) => {
+  const handleDeleteEncounter = async (id: number) => {
+    await encounterApi.delete(id);
     setEncounters((prevEncounters) =>
       prevEncounters.filter((enc) => enc.id !== id)
     );
     if (id === activeEncounterId) setActiveEncounterId(null);
   };
 
-  const handleRenameEncounter = (id: number, newName: string) => {
+  const handleRenameEncounter = async (id: number, newName: string) => {
     if (id == null || newName.trim() === '') return;
-    setEncounters((prevEncounters) => {
-      return prevEncounters.map((enc) => {
-        if (enc.id !== id) return enc;
-        return { ...enc, name: newName };
-      });
-    });
+    await encounterApi.update({ id, name: newName });
+    setEncounters((prevEncounters) =>
+      prevEncounters.map((enc) =>
+        enc.id !== id ? enc : { ...enc, name: newName }
+      )
+    );
   };
 
   const handleUpdateMonster = async (
     monsterId: number,
-    changes: Partial<ActiveMonsterDto>
+    changes: Partial<ActiveMonster>
   ) => {
     if (!activeEncounter) return;
     const updatedMonsters = await encounterService.updateMonster(
@@ -206,15 +237,13 @@ export const Dashboard = () => {
         encounters={encounters}
         activeEncounterId={activeEncounterId}
         onSelectEncounter={setActiveEncounterId}
-        monsters={raMonsters}
-        onSelectMonster={() => false}
         onAddEncounter={handleAddEncounter}
         onDeleteEncounter={handleDeleteEncounter}
         onRenameEncounter={handleRenameEncounter}
       />
-      {activeEncounter ? (
+      {activeEncounterHydrated ? (
         <EncounterTable
-          encounter={activeEncounter}
+          encounter={activeEncounterHydrated}
           onNextTurn={handleNextTurn}
           activeMonsters={hydratedMonsters}
           onPreviousTurn={handlePreviousTurn}
@@ -237,6 +266,7 @@ export const Dashboard = () => {
         onUpdateMonster={handleUpdateMonster}
         onClosePanel={() => setPanelMode('closed')}
         previewMonster={fakeActiveMonster}
+        templates={templates}
         onSelectTemplateId={setSelectedTemplateId}
         onAddMonster={handleAddMonsterToEncounter}
       />

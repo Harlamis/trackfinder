@@ -1,10 +1,10 @@
-import type { Encounter } from '../types';
+import type { EncounterDto } from '../types';
 import AddCrossIcon from '../assets/add-cross.svg';
 import PencilIcon from '../assets/pencil.svg';
 import TrashIcon from '../assets/trashcan.svg';
 
 interface EncountersListItemProps {
-  encounter: Encounter;
+  encounter: EncounterDto;
   isActive: boolean;
   onSelect(id: number): void;
   onAdd(): void;
@@ -59,7 +59,7 @@ export const EncountersListItem = ({
 };
 
 interface EncountersListProps {
-  encounters: Encounter[];
+  encounters: EncounterDto[];
   activeEncounterId: number | null;
   onSelectActive(id: number): void;
   onAdd(): void;
