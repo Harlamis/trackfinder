@@ -1,73 +1,99 @@
-# React + TypeScript + Vite
+# Trackfinder (Encounter & Monster Tracker)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project consists of two parts: a C# (.NET Core) backend and a React (Vite + TypeScript) frontend. Below are the instructions for setting up both parts locally.
 
-Currently, two official plugins are available:
+## Prerequisites
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Ensure the following software is installed on your machine:
 
-## React Compiler
+- [Git](https://git-scm.com/)
+- [.NET SDK](https://dotnet.microsoft.com/download) (Version used in the project, e.g., .NET 8)
+- [Node.js](https://nodejs.org/) (Version 18+ and npm recommended)
+- [PostgreSQL](https://www.postgresql.org/) (Database server must be running)
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+---
 
-## Expanding the ESLint configuration
+## Backend Setup (.NET API)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+The backend handles storing encounter data, monster templates (bestiary), and their current state.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+**1. Clone the repository**
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone <backend_repository_url>
+cd <backend_folder_name>
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+**2. Database Configuration**
+Open `appsettings.json` (or `appsettings.Development.json`) and configure the connection string for your local PostgreSQL server.
+_Note: replace `Username` and `Password` with your actual credentials._
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Host=localhost;Database=TrackfinderDb;Username=postgres;Password=your_password"
+}
 ```
+
+**3. Apply Migrations and Seed Database**
+The project uses Entity Framework Core. To create the tables and populate the bestiary with initial monster templates (Mudcrab, Draugr, Dragon), run the following command:
+
+```bash
+dotnet ef database update
+```
+
+_(If EF Core tools are not installed globally, run: `dotnet tool install --global dotnet-ef`)_
+
+**4. Run the Server**
+
+```bash
+dotnet run
+```
+
+By default, the API will be available at `http://localhost:5287`. The Swagger documentation page is accessible at `/swagger`.
+
+---
+
+## Frontend Setup (React + Vite)
+
+The client side is built with React, using TypeScript and Tailwind CSS for styling.
+
+**1. Clone the repository**
+
+```bash
+git clone <frontend_repository_url>
+cd <frontend_folder_name>
+```
+
+**2. Install Dependencies**
+
+```bash
+npm install
+```
+
+**3. Environment Variables**
+Create a `.env` file in the root of the frontend project and specify the URL to the local API. Ensure the port matches the one where the backend is running:
+
+```env
+VITE_API_URL=http://localhost:5287/api
+```
+
+**4. Run the Application**
+
+```bash
+npm run dev
+```
+
+The frontend will be available in your browser at `http://localhost:5173`.
+
+---
+
+## LAN Access (Optional)
+
+If you want to access the application interface from a smartphone or another computer on your local network (Wi-Fi):
+
+1. **On the backend:** Ensure your CORS settings allow requests from your local IP address.
+2. **On the frontend:** Run Vite with the `--host` flag so the server accepts external connections:
+   ```bash
+   npm run dev -- --host
+   ```
+   Your local IP address will appear in the terminal (e.g., `Network: http://192.168.1.100:5173/`), which you can use to open the application from other devices.
