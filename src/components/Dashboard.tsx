@@ -172,20 +172,22 @@ export const Dashboard = () => {
     });
   };
 
-  const handleUpdateMonster = (
+  const handleUpdateMonster = async (
     monsterId: number,
-    changes: Partial<ActiveMonster>
+    changes: Partial<ActiveMonsterDto>
   ) => {
+    if (!activeEncounter) return;
+    const updatedMonsters = await encounterService.updateMonster(
+      activeEncounter.monsters,
+      monsterId,
+      changes
+    );
     setEncounters((prevEncounters) =>
       prevEncounters.map((enc) => {
         if (enc.id !== activeEncounterId) return enc;
         return {
           ...enc,
-          monsters: encounterService.updateMonster(
-            enc.monsters,
-            monsterId,
-            changes
-          ),
+          monsters: updatedMonsters,
         };
       })
     );
