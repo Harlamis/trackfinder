@@ -78,7 +78,7 @@ export interface EncounterDto {
   id: number;
   name: string;
   currentRound: number;
-  activeMonsterId: number;
+  activeMonsterId: number | null;
   monsters: ActiveMonsterDto[];
 }
 
@@ -96,7 +96,7 @@ export interface UpdateEncounterDto {
 export interface ActiveMonsterDto {
   id: number;
   encounterId: number;
-  templateId: number;
+  templateId: string;
   name: string;
   maxHp: number;
   currentHp: number;
@@ -106,13 +106,17 @@ export interface ActiveMonsterDto {
 
 export interface AddMonsterToEncounterDto {
   encounterId: number;
-  templateId: number;
+  templateId: string;
 }
 
 export interface UpdateMonsterDto {
   id: number;
   currentHp?: number;
+  maxHp?: number;
   init?: number;
+  ac?: number;
+  isPlayer?: boolean;
+  customName?: string;
 }
 
 export interface MonsterTemplateDto {

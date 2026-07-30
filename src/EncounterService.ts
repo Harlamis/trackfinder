@@ -1,31 +1,33 @@
-import type { CombatMonster, Encounter, MonsterTemplate } from './types';
+import { encounterApi } from './api/encounterApi';
+import { monsterApi } from './api/monsterApi';
+import type {
+  ActiveMonsterDto,
+  Encounter,
+  EncounterDto,
+  UpdateMonsterDto,
+} from './types';
 
 export const encounterService = {
-  createEncounter: (name: string): Encounter => {
+  createEncounter: async (name: string): Promise<EncounterDto> => {
+    const encId = await encounterApi.create({ name });
     return {
-      id: Date.now(),
-      name: name.trim() || 'Нова сутичка',
-      monsters: [],
-      activeMonsterId: null,
+      id: encId,
+      name: name.trim() || `Encounter ${encId}`,
       currentRound: 1,
+      activeMonsterId: null,
+      monsters: [],
     };
   },
 
-  addMonster: (encounter: Encounter, template: MonsterTemplate): Encounter => {
-    const newMonster: CombatMonster = {
-      templateId: template.id,
-      customName: undefined,
-      currentHp: template.maxHp,
-      init: 0,
-      maxHp: template.maxHp,
-      isPlayer: false,
-      id: Date.now() + Math.floor(Math.random() * 1000),
-    };
-
-    return {
-      ...encounter,
-      monsters: [...encounter.monsters, newMonster],
-    };
+  addMonster: async (
+    encounterId: number,
+    templateId: string
+  ): Promise<ActiveMonsterDto> => {
+    const newMonster = await monsterApi.addMonsterToEncounter({
+      encounterId,
+      templateId,
+    });
+    return newMonster;
   },
 
   nextTurn: (encounter: Encounter): Encounter => {
@@ -93,43 +95,71 @@ export const encounterService = {
     };
   },
 
-  updateMonster: (
-    monsters: CombatMonster[],
+  updateMonster: async (
+    monsters: ActiveMonsterDto[],
     monsterId: number,
-    changes: Partial<CombatMonster>
-  ): CombatMonster[] => {
-    const validated: Partial<CombatMonster> = { ...changes };
+    changes: Partial<ActiveMonsterDto>
+  ): Promise<ActiveMonsterDto[]> => {
+    const validated: Partial<UpdateMonsterDto> = {};
 
     if (
-      'init' in validated &&
-      validated.init !== undefined &&
-      Number.isNaN(validated.init)
+      'init' in changes &&
+      changes.init !== undefined &&
+      changes.init !== null &&
+      !Number.isNaN(changes.init)
     ) {
-      delete validated.init;
+      validated.init = changes.init;
     }
+
     if (
-      'ac' in validated &&
-      validated.ac !== undefined &&
-      Number.isNaN(validated.ac)
+      'ac' in changes &&
+      changes.ac !== undefined &&
+      changes.ac !== null &&
+      !Number.isNaN(changes.ac)
     ) {
-      delete validated.ac;
+      validated.ac = changes.ac;
     }
-    if ('maxHp' in validated && validated.maxHp !== undefined) {
-      if (Number.isNaN(validated.maxHp) || validated.maxHp < 0) {
-        delete validated.maxHp;
-      }
+
+    if (
+      'maxHp' in changes &&
+      changes.maxHp !== undefined &&
+      changes.maxHp !== null &&
+      !Number.isNaN(changes.maxHp) &&
+      changes.maxHp >= 0
+    ) {
+      validated.maxHp = changes.maxHp;
     }
-    if ('customName' in validated && validated.customName !== undefined) {
-      const trimmed = validated.customName.trim();
+
+    if (
+      'currentHp' in changes &&
+      changes.currentHp !== undefined &&
+      changes.currentHp !== null &&
+      !Number.isNaN(changes.currentHp)
+    ) {
+      validated.currentHp = changes.currentHp;
+    }
+
+    if ('customName' in changes && typeof changes.customName === 'string') {
+      const trimmed = changes.customName.trim();
       validated.customName = trimmed === '' ? undefined : trimmed;
     }
+
+    if ('isPlayer' in changes && typeof changes.isPlayer === 'boolean') {
+      validated.isPlayer = changes.isPlayer;
+    }
+
+    if (Object.keys(validated).length === 0) {
+      return monsters;
+    }
+
+    await monsterApi.updateMonster({ id: monsterId, ...validated });
 
     return monsters.map((mon) => {
       if (mon.id !== monsterId) return mon;
 
       const updated = { ...mon, ...validated };
 
-      if ('maxHp' in validated && updated.maxHp !== undefined) {
+      if (validated.maxHp !== undefined) {
         updated.currentHp = Math.min(updated.currentHp, updated.maxHp);
       }
 
@@ -137,25 +167,36 @@ export const encounterService = {
     });
   },
 
-  applyHpDelta: (
-    monsters: CombatMonster[],
+  applyHpDelta: async (
+    monsters: ActiveMonsterDto[],
     monsterId: number,
     deltaHp: number
-  ): CombatMonster[] => {
+  ): Promise<ActiveMonsterDto[]> => {
     if (Number.isNaN(deltaHp)) return monsters;
 
-    return monsters.map((mon) => {
-      if (mon.id !== monsterId) return mon;
+    const target = monsters.find((m) => m.id === monsterId);
 
-      const newHp = Math.max(0, Math.min(mon.maxHp, mon.currentHp + deltaHp));
-      return { ...mon, currentHp: newHp };
-    });
+    if (target) {
+      const newHp = Math.max(
+        0,
+        Math.min(target.maxHp, target.currentHp + deltaHp)
+      );
+
+      await monsterApi.updateMonster({ id: monsterId, currentHp: newHp });
+
+      return monsters.map((mon) => {
+        if (mon.id !== monsterId) return mon;
+        return { ...mon, currentHp: newHp };
+      });
+    }
+    return monsters;
   },
 
-  removeMonster: (
-    monsters: CombatMonster[],
+  removeMonster: async (
+    monsters: ActiveMonsterDto[],
     monsterId: number
-  ): CombatMonster[] => {
+  ): Promise<ActiveMonsterDto[]> => {
+    await monsterApi.deleteMonster(monsterId);
     return monsters.filter((mon) => mon.id !== monsterId);
   },
 };
