@@ -131,23 +131,19 @@ export const Dashboard = () => {
       }
     : null;
 
-  const handleAddMonsterToEncounter = (templateId: string | null) => {
+  const handleAddMonsterToEncounter = async (templateId: string | null) => {
     if (!templateId) return;
-    const template = BESTIARY.find((t) => t.id === templateId);
-    if (!template) return;
-    if (activeEncounterId === null) return;
-
+    if (!activeEncounterId) return;
+    const newMonster = await encounterService.addMonster(
+      activeEncounterId,
+      templateId
+    );
     setEncounters((prevEncounters) => {
       return prevEncounters.map((enc) => {
         if (enc.id !== activeEncounterId) return enc;
-
-        const added = encounterService.addMonster(enc, template);
-        const randomInit = getRandomInt(1, 20);
         return {
-          ...added,
-          monsters: added.monsters.map((mon, index, list) =>
-            index === list.length - 1 ? { ...mon, init: randomInit } : mon
-          ),
+          ...enc,
+          monsters: [...enc.monsters, newMonster],
         };
       });
     });
