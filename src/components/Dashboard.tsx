@@ -4,7 +4,7 @@ import { Sidebar } from './Sidebar';
 import type {
   PanelMode,
   MonsterTemplate,
-  ActiveMonster,
+  ActiveMonsterView,
   EncounterDto,
 } from '../types';
 import { EncounterTable } from './EncounterTable';
@@ -33,7 +33,7 @@ export const Dashboard = () => {
   );
 
   type HydratedEncounter = Omit<EncounterDto, 'monsters'> & {
-    monsters: ActiveMonster[];
+    monsters: ActiveMonsterView[];
   };
 
   const activeEncounterHydrated = useMemo<HydratedEncounter | null>(() => {
@@ -149,18 +149,6 @@ export const Dashboard = () => {
 
   const selectedTemplate = templates.find((t) => t.id === selectedTemplateId);
 
-  const fakeActiveMonster: ActiveMonster | null = selectedTemplate
-    ? {
-        ...selectedTemplate,
-        id: -1,
-        templateId: selectedTemplate.id,
-        maxHp: selectedTemplate.maxHp,
-        currentHp: selectedTemplate?.maxHp,
-        init: 0,
-        isPlayer: false,
-      }
-    : null;
-
   const handleAddMonsterToEncounter = async (templateId: string | null) => {
     if (!templateId) return;
     if (!activeEncounterId) return;
@@ -205,7 +193,7 @@ export const Dashboard = () => {
 
   const handleUpdateMonster = async (
     monsterId: number,
-    changes: Partial<ActiveMonster>
+    changes: Partial<ActiveMonsterView>
   ) => {
     if (!activeEncounter) return;
     const updatedMonsters = await encounterService.updateMonster(
@@ -265,7 +253,7 @@ export const Dashboard = () => {
         onHealthChange={handleHealthChange}
         onUpdateMonster={handleUpdateMonster}
         onClosePanel={() => setPanelMode('closed')}
-        previewMonster={fakeActiveMonster}
+        previewMonster={selectedTemplate ?? null}
         templates={templates}
         onSelectTemplateId={setSelectedTemplateId}
         onAddMonster={handleAddMonsterToEncounter}

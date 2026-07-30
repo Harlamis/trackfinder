@@ -1,5 +1,10 @@
 import { monsterApi } from './api/monsterApi';
-import type { MonsterTemplate, ActiveMonsterDto, ActiveMonster } from './types';
+import type {
+  MonsterTemplate,
+  ActiveMonsterDto,
+  ActiveMonsterView,
+  MonsterDetails,
+} from './types';
 
 export interface BestiaryFilters {
   query?: string;
@@ -11,10 +16,10 @@ export const BestiaryService = {
   loadTemplates: async (): Promise<MonsterTemplate[]> => {
     const dtos = await monsterApi.getAllTemplates();
     const templates = dtos.map((dto) => {
-      let parsedDetails = undefined;
+      let parsedDetails: MonsterDetails | undefined = undefined;
       if (dto.detailsJson) {
         try {
-          parsedDetails = JSON.parse(dto.detailsJson);
+          parsedDetails = JSON.parse(dto.detailsJson) as MonsterDetails;
         } catch (e) {
           console.error(
             `Could not parse details payload for template id: ${dto.id}`,
@@ -56,11 +61,12 @@ export const BestiaryService = {
   hydrateMonsters: (
     monsters: ActiveMonsterDto[],
     templates: MonsterTemplate[]
-  ): ActiveMonster[] => {
+  ): ActiveMonsterView[] => {
     return monsters.map((monster) => {
       const template = templates.find((t) => t.id === monster.templateId);
       return {
         id: monster.id,
+        encounterId: monster.encounterId,
         templateId: monster.templateId,
         customName: monster.customName ?? monster.name,
         maxHp: monster.maxHp,

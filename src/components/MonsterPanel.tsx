@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
-import type { ActiveMonster, MonsterTemplate, PanelMode } from '../types';
+import type { ActiveMonsterView, MonsterTemplate, PanelMode } from '../types';
 import ExitCrossIcon from '../assets/exit-cross.svg';
 import { MonsterInspector } from './MonsterInspector';
 import { BestiaryList } from './BestiaryList';
@@ -9,9 +9,9 @@ interface MonsterPanelProps {
   panelMode: PanelMode;
   onClosePanel(): void;
   onHealthChange(amount: number): void;
-  onUpdateMonster(monsterId: number, changes: Partial<ActiveMonster>): void;
-  activeMonster: ActiveMonster | null;
-  previewMonster: ActiveMonster | null;
+  onUpdateMonster(monsterId: number, changes: Partial<ActiveMonsterView>): void;
+  activeMonster: ActiveMonsterView | null;
+  previewMonster: MonsterTemplate | null;
   templates: MonsterTemplate[];
   onSelectTemplateId(id: string | null): void;
   onAddMonster(templateId: string | null): void;

@@ -1,25 +1,25 @@
 import { twMerge } from 'tailwind-merge';
-import type { Encounter, ActiveMonster } from '../types';
+import type { EncounterDto, ActiveMonsterView } from '../types';
 import { Healthbar } from './Healthbar';
 import { useState } from 'react';
 
 interface EncounterTableProps {
-  encounter: Pick<Encounter, 'currentRound' | 'activeMonsterId'>;
-  activeMonsters: ActiveMonster[];
+  encounter: Pick<EncounterDto, 'currentRound' | 'activeMonsterId'>;
+  activeMonsters: ActiveMonsterView[];
   selectedMonsterId: number | null;
   onNextTurn(): void;
   onPreviousTurn(): void;
   onSelectMonster(id: number): void;
   onOpenBestiary(): void;
-  onUpdateMonster(monsterId: number, changes: Partial<ActiveMonster>): void;
+  onUpdateMonster(monsterId: number, changes: Partial<ActiveMonsterView>): void;
 }
 
 interface EncounterTableRowProps {
-  monster: ActiveMonster;
+  monster: ActiveMonsterView;
   className?: string;
   isSelected: boolean;
   onSelectMonster(id: number): void;
-  onUpdateMonster(monsterId: number, changes: Partial<ActiveMonster>): void;
+  onUpdateMonster(monsterId: number, changes: Partial<ActiveMonsterView>): void;
 }
 
 const EncounterTableRow = ({

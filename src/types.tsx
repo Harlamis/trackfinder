@@ -1,22 +1,3 @@
-export interface Encounter {
-  id: number;
-  name: string;
-  currentRound: number;
-  activeMonsterId: number | null;
-  monsters: CombatMonster[];
-}
-
-export interface Monster {
-  id: number;
-  name: string;
-  maxHp: number;
-  currentHp: number;
-  ac: number;
-  init: number;
-  isPlayer: boolean;
-  details?: MonsterDetails;
-}
-
 export interface MonsterTemplate {
   id: string;
   baseName: string;
@@ -25,17 +6,20 @@ export interface MonsterTemplate {
   details?: MonsterDetails;
 }
 
-export interface CombatMonster {
+export interface ActiveMonsterView {
   id: number;
+  encounterId: number;
   templateId: string;
   customName?: string;
-  currentHp: number;
+  name?: string;
   maxHp: number;
+  currentHp: number;
+  ac: number;
   init: number;
   isPlayer: boolean;
+  baseName: string;
+  details?: MonsterDetails;
 }
-
-export type ActiveMonster = CombatMonster & Omit<MonsterTemplate, 'id'>;
 
 export type SidebarMonsterMetadata = Pick<MonsterTemplate, 'id' | 'baseName'>;
 

@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import type { ActiveMonster } from '../types';
+import type { ActiveMonsterView, MonsterTemplate } from '../types';
 import { Healthbar } from './Healthbar';
 
+type MonsterInspectorMonster = ActiveMonsterView | MonsterTemplate;
+
 interface MonsterInspectorProps {
-  monster: ActiveMonster;
+  monster: MonsterInspectorMonster;
   onHealthChange(amount: number): void;
-  onUpdateMonster(monsterId: number, changes: Partial<ActiveMonster>): void;
+  onUpdateMonster(monsterId: number, changes: Partial<ActiveMonsterView>): void;
   isEditable?: boolean;
 }
 
@@ -15,9 +17,12 @@ export const MonsterInspector = ({
   onUpdateMonster,
   isEditable = true,
 }: MonsterInspectorProps) => {
+  const isActiveMonster = 'currentHp' in monster;
   const [customHealth, setCustomHealth] = useState<number | ''>('');
   const [nameInput, setNameInput] = useState(
-    monster.customName ?? monster.baseName
+    'customName' in monster && monster.customName
+      ? monster.customName
+      : monster.baseName
   );
   const [acInput, setAcInput] = useState(String(monster.ac));
   const [maxHpInput, setMaxHpInput] = useState(String(monster.maxHp));
@@ -26,12 +31,14 @@ export const MonsterInspector = ({
     'w-full rounded-lg border border-border bg-main-bg px-3 py-2 text-sm text-text-main placeholder-text-muted focus:border-accent focus:outline-none';
 
   const commitNameChange = () => {
+    if (!isActiveMonster) return;
     onUpdateMonster(monster.id, {
       customName: nameInput.trim() || undefined,
     });
   };
 
   const commitAcChange = () => {
+    if (!isActiveMonster) return;
     const acValue = Number(acInput);
     if (!Number.isNaN(acValue)) {
       onUpdateMonster(monster.id, { ac: acValue });
@@ -39,6 +46,7 @@ export const MonsterInspector = ({
   };
 
   const commitMaxHpChange = () => {
+    if (!isActiveMonster) return;
     const maxHpValue = Number(maxHpInput);
     if (!Number.isNaN(maxHpValue)) {
       onUpdateMonster(monster.id, { maxHp: maxHpValue });
@@ -51,6 +59,7 @@ export const MonsterInspector = ({
     setCustomHealth('');
   };
   const details = monster.details;
+  const currentHp = isActiveMonster ? monster.currentHp : monster.maxHp;
   return (
     <div className='flex flex-col gap-4 rounded-b-xl bg-main-card p-1 text-text-main'>
       <div className='flex flex-col gap-3'>
@@ -104,13 +113,13 @@ export const MonsterInspector = ({
 
         <div>
           <Healthbar
-            currentHp={monster.currentHp}
+            currentHp={currentHp}
             maxHp={monster.maxHp}
-            isPlayer={monster.isPlayer}
+            isPlayer={Boolean(isActiveMonster && monster.isPlayer)}
           />
         </div>
       </div>
-      {isEditable && (
+      {isEditable && isActiveMonster && (
         <div className='mt-2 flex flex-col gap-4'>
           <div className='grid grid-cols-4 gap-2'>
             <button
