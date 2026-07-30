@@ -58,7 +58,7 @@ export const MonsterInspector = ({
     onHealthChange(multiplier * customHealth);
     setCustomHealth('');
   };
-  const details = monster.details;
+  const details = monster.details as MonsterTemplate['details'] | undefined;
   const currentHp = isActiveMonster ? monster.currentHp : monster.maxHp;
   return (
     <div className='flex flex-col gap-4 rounded-b-xl bg-main-card p-1 text-text-main'>
