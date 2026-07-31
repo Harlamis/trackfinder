@@ -1,4 +1,4 @@
-import { use, useState } from 'react';
+import { useState } from 'react';
 import type { MonsterTemplate } from '../types';
 import { Healthbar } from './Healthbar';
 
