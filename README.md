@@ -20,8 +20,8 @@ The backend handles storing encounter data, monster templates (bestiary), and th
 **1. Clone the repository**
 
 ```bash
-git clone <backend_repository_url>
-cd <backend_folder_name>
+git clone https://github.com/Harlamis/tf-backend
+cd tf-backend
 ```
 
 **2. Database Configuration**
@@ -60,8 +60,8 @@ The client side is built with React, using TypeScript and Tailwind CSS for styli
 **1. Clone the repository**
 
 ```bash
-git clone <frontend_repository_url>
-cd <frontend_folder_name>
+git clone https://github.com/Harlamis/trackfinder
+cd trackfinder
 ```
 
 **2. Install Dependencies**
